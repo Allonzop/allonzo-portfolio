@@ -21,7 +21,7 @@ export function CardFan() {
           />
         ))}
       </div>
-      <figcaption className="mt-1 text-[0.75rem] text-ink-2">Real cards from the game, drawn by my brother.</figcaption>
+      <figcaption className="mt-1 text-[0.92rem] text-ink-2">Real cards from the game, drawn by my brother.</figcaption>
     </figure>
   )
 }
@@ -47,7 +47,7 @@ export function CardFlip() {
   return (
     <figure className="mt-5">
       <canvas ref={ref} width={640} height={360} className="block h-auto w-full border-2 border-ink" aria-label="BOLOSS cards turning over" />
-      <figcaption className="mt-1 text-[0.75rem] text-ink-2">Real cards from the game, drawn by my brother.</figcaption>
+      <figcaption className="mt-1 text-[0.92rem] text-ink-2">Real cards from the game, drawn by my brother.</figcaption>
     </figure>
   )
 }

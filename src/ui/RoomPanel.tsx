@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { ROOM_BY_ID, TOUR, type RoomId } from '../content/rooms'
 import { useStore } from '../store'
-import { RoomContent } from './RoomContent'
+import { BODY, keepRanges, RoomContent, TITLE } from './RoomContent'
 
 const useNarrow = () => {
   const [narrow, set] = useState(() => window.matchMedia('(max-width: 759px)').matches)
@@ -67,7 +67,7 @@ export function RoomPanel() {
           style={{ originX: 1, originY: 0 }}
           className={`tag pointer-events-auto absolute flex flex-col overflow-hidden shadow-[0_24px_60px_-18px_rgb(0_0_0/0.85)] ${
             narrow
-              ? `inset-x-0 bottom-0 rounded-t-[10px] border-t-2 border-tag-line ${expanded ? 'top-16' : 'h-[58svh]'}`
+              ? `inset-x-0 bottom-0 rounded-t-[10px] border-t border-tag-line ${expanded ? 'top-16' : 'h-[58svh]'}`
               : 'top-[5.4rem] right-4 bottom-4 w-[min(30rem,42vw)] rounded-[8px] border-2 border-tag-line'
           }`}
           aria-label={`${room.code}: ${room.title}`}
@@ -85,7 +85,7 @@ export function RoomPanel() {
             )}
             <div className="flex items-center gap-3 pt-1">
               <span aria-hidden className="size-5 shrink-0 rounded-full border-[4px] border-[#5d5d5d] bg-tag" />
-              <p className="engraved flex-1 text-[0.86rem] font-extrabold">
+              <p className={`engraved flex-1 font-extrabold ${BODY}`}>
                 {room.code}
                 <span className="mx-2 text-[#8d877a]">·</span>
                 <span className={commissioned ? 'text-[#8ee0b0]' : 'text-[#a59f92]'}>{commissioned ? 'Commissioned' : 'Offline'}</span>
@@ -108,10 +108,10 @@ export function RoomPanel() {
             </div>
           </header>
           <div ref={scroller} className="flex-1 overflow-y-auto overscroll-contain px-5 pt-5 pb-6 sm:px-6">
-            <h2 className="engraved text-[2.1rem] leading-[0.95] font-extrabold" style={{ textTransform: 'none' }}>
+            <h2 className={`engraved leading-[0.95] font-extrabold ${TITLE}`} style={{ textTransform: 'none' }}>
               {room.title}
             </h2>
-            <p className="reading mt-2 text-[0.78rem] text-ink-2">{room.context}</p>
+            <p className={`mt-2 text-ink-2 ${BODY}`}>{keepRanges(room.context)}</p>
             <div className="mt-4">
               <RoomContent room={room} live />
             </div>
@@ -119,7 +119,7 @@ export function RoomPanel() {
               <button
                 type="button"
                 onClick={() => travelTo(next)}
-                className="engraved mt-8 flex w-full items-center justify-between rounded-[3px] bg-ink px-4 py-3 text-[0.9rem] font-extrabold text-tag transition-colors hover:bg-[#2a2a2a]"
+                className={`engraved mt-8 flex w-full items-center justify-between rounded-[3px] bg-ink px-4 py-3 font-extrabold text-tag transition-colors hover:bg-[#2a2a2a] ${BODY}`}
               >
                 <span>
                   Next room · {ROOM_BY_ID[next].code}

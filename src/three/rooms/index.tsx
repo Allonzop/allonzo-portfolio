@@ -37,17 +37,17 @@ export function Rooms() {
       <StaticBatch room="arcade" warmth={0.45} tint="#ff9ec8">
         <Arcade />
       </StaticBatch>
-      <StaticBatch room="solar" warmth={0.2} tint="#bcd2ff">
+      <StaticBatch room="solar" warmth={0.2} tint="#bcd2ff" dark={0.45}>
         <Solar />
       </StaticBatch>
-      <StaticBatch room="plant" warmth={0.3}>
+      <StaticBatch room="plant" warmth={0.3} dark={0.5}>
         <Ducts />
       </StaticBatch>
-      <StaticBatch room="parking" warmth={0.3}>
+      <StaticBatch room="parking" warmth={0.3} dark={0.45}>
         <CarPark />
         <CarParkSign />
       </StaticBatch>
-      <StaticBatch room="boatyard" warmth={0.5} tint="#ffc27a">
+      <StaticBatch room="boatyard" warmth={0.42} tint="#ffc27a" dark={0.45}>
         <Boatyard />
       </StaticBatch>
     </group>

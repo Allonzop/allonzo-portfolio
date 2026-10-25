@@ -221,7 +221,7 @@ function Lighthouse() {
         for (const [at, v] of seq) if (e >= at) on = v
       }
     }
-    if (lamp.current) lamp.current.color.setScalar(on ? 3.2 : 0.15)
+    if (lamp.current) lamp.current.color.setScalar(on ? 1.6 : 0.15)
     if (beam.current) beam.current.visible = on
   })
   return (

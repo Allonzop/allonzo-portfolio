@@ -21,9 +21,9 @@ function Mark({ on, size = 10 }: { on: boolean; size?: number }) {
 
 function Identity() {
   return (
-    <div className="plate screws pointer-events-auto px-5 pt-3 pb-2.5 max-sm:px-4 max-sm:pt-2.5">
-      <p className="engraved text-[1.05rem] leading-none font-extrabold max-sm:text-[0.8rem] max-sm:whitespace-nowrap">{PROFILE.name}</p>
-      <p className="engraved mt-1 text-[0.72rem] leading-tight font-semibold text-[#c9c3b4] max-sm:hidden">{PROFILE.title}</p>
+    <div className="plate screws pointer-events-auto px-7 py-2.5 text-[0.86rem] max-sm:py-2 max-sm:text-[0.8rem]">
+      <p className="engraved leading-tight font-extrabold whitespace-nowrap">{PROFILE.name}</p>
+      <p className="engraved leading-tight font-semibold text-[#c9c3b4] max-sm:hidden">{PROFILE.title}</p>
     </div>
   )
 }
@@ -33,9 +33,9 @@ function Progress() {
   const xp = useStore((s) => s.xp)
   const reduce = useReducedMotion()
   return (
-    <div className="plate screws pointer-events-auto flex items-center gap-4 px-5 py-2.5 max-sm:gap-3 max-sm:px-4">
+    <div className="plate screws pointer-events-auto flex items-center gap-4 px-7 py-2.5 text-[0.86rem] max-sm:gap-3">
       <div>
-        <p className="engraved text-[0.72rem] leading-none font-bold text-[#c9c3b4]">
+        <p className="engraved leading-none font-bold text-[#c9c3b4]">
           <span className="max-sm:hidden">Building commissioning</span>
           <span className="sm:hidden">Commissioned</span>
         </p>
@@ -53,13 +53,13 @@ function Progress() {
           ))}
         </div>
       </div>
-      <p className="reading text-[1.15rem] leading-none text-engrave">
+      <p className="reading leading-none font-bold text-engrave">
         {done.length}/{ROOMS.length}
       </p>
       <span className="h-7 w-px bg-[#3a3a3a]" />
-      <p className="reading text-[1.15rem] leading-none text-sodium" aria-label={`${xp} experience points`}>
+      <p className="reading leading-none font-bold text-sodium" aria-label={`${xp} experience points`}>
         {xp}
-        <span className="ml-1 text-[0.7rem] text-[#c9c3b4]">XP</span>
+        <span className="ml-1 font-normal text-[#c9c3b4]">XP</span>
       </p>
     </div>
   )
@@ -118,14 +118,14 @@ function Readings() {
     ['P', kw.toFixed(1), 'kW'],
   ]
   return (
-    <div className="plate screws pointer-events-auto px-4 pt-6 pb-3 max-sm:hidden" aria-label="Simulated building readings">
-      <p className="engraved absolute top-2 left-1/2 -translate-x-1/2 text-[0.62rem] font-bold whitespace-nowrap text-[#a59f92]">BMS · sim</p>
-      <dl className="reading grid grid-cols-[auto_auto_auto] items-baseline gap-x-2.5 gap-y-1 text-[0.95rem]">
+    <div className="plate screws pointer-events-auto px-7 pt-2.5 pb-3 text-[0.8rem] max-sm:hidden" aria-label="Simulated building readings">
+      <p className="engraved mb-1.5 font-bold whitespace-nowrap text-[#a59f92]">BMS · sim</p>
+      <dl className="reading grid grid-cols-[auto_auto_auto] items-baseline gap-x-2.5 gap-y-1">
         {rows.map(([k, v, u]) => (
           <div key={k} className="contents">
             <dt className="text-[#a59f92]">{k}</dt>
             <dd className="text-right text-reading">{v}</dd>
-            <dd className="text-[0.72rem] text-[#a59f92]">{u}</dd>
+            <dd className="text-[#a59f92]">{u}</dd>
           </div>
         ))}
       </dl>
@@ -145,7 +145,7 @@ function LiftControl() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
-          className="plate screws pointer-events-auto flex items-center gap-2 px-4 py-2.5"
+          className="plate screws pointer-events-auto flex items-center gap-2 px-7 py-2.5"
           role="group"
           aria-label="Lift"
         >
@@ -187,7 +187,7 @@ function Intro() {
             I'm {PROFILE.name}, a building automation and energy engineer. Each room of this building is one of my projects. Walk in to commission it,
             and the lights come on.
           </p>
-          <p className="reading mt-3 text-[0.82rem] text-ink">
+          <p className="mt-3 text-[0.92rem] font-bold text-ink max-sm:text-[0.86rem]">
             {coarse ? 'Tap the floor to walk. Drag to look around.' : 'WASD or arrows to walk, or click the floor. Drag to orbit.'}
           </p>
           <div className="mt-5 flex flex-wrap gap-2 max-sm:mt-4 [&>button]:max-sm:px-3.5 [&>button]:max-sm:py-2.5 [&>button]:max-sm:text-[0.82rem]">
@@ -222,7 +222,7 @@ function PoweringUp() {
           className="absolute inset-x-0 top-[38%] flex justify-center"
           role="status"
         >
-          <div className="plate screws flex items-center gap-3 px-5 py-3">
+          <div className="plate screws flex items-center gap-3 px-7 py-3">
           <motion.span
             aria-hidden
             className="size-3 border-2 border-sodium"

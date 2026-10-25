@@ -1,22 +1,31 @@
 import type { Metric, Room } from '../content/rooms'
+
+/** Two sizes per tag: TITLE for the room title and every figure, BODY for everything else */
+export const TITLE = 'text-[2rem] max-sm:text-[1.7rem]'
+export const BODY = 'text-[0.92rem]'
+
+/** Dates and ranges never break across lines */
+const WJ = String.fromCharCode(0x2060)
+export const keepRanges = (s: string) => s.replace(/(\w)([–-])(\w)/g, `$1${WJ}$2${WJ}$3`)
+
+/** An engraved dash: a list bullet that is never mistaken for a state mark */
+export function Dash({ tone = 'ink' }: { tone?: 'ink' | 'sodium' }) {
+  return <span aria-hidden className={`absolute top-[0.72em] left-0 h-[2px] w-2.5 ${tone === 'ink' ? 'bg-ink' : 'bg-sodium'}`} />
+}
 import { CardFan, CardFlip } from './CardFlip'
 import { ParkingCounter } from './ParkingCounter'
 
 /** Rating-plate grid: the fields engraved on a piece of equipment */
-export function RatingPlate({ items, size = 'lg' }: { items: Metric[]; size?: 'lg' | 'sm' }) {
-  const cols = items.length === 3 || items.length === 5 ? 'grid-cols-3' : 'grid-cols-2'
+export function RatingPlate({ items }: { items: Metric[] }) {
   return (
-    <dl className={`grid ${cols} border-t-2 border-l-2 border-ink`}>
+    <dl className="grid grid-cols-2 border-t-2 border-l-2 border-ink">
       {items.map((m, i) => (
-        <div key={i} className="border-r-2 border-b-2 border-ink px-3 pt-2.5 pb-3">
+        <div key={i} className={`border-r-2 border-b-2 border-ink px-3 pt-2.5 pb-3 ${items.length % 2 && i === items.length - 1 ? 'col-span-2' : ''}`}>
           <dt className="sr-only">{m.label}</dt>
-          <dd
-            className={`engraved font-extrabold leading-none text-ink ${size === 'lg' ? 'text-[1.9rem] max-sm:text-[1.6rem]' : 'text-[1.35rem]'}`}
-            style={{ textTransform: 'none' }}
-          >
+          <dd className={`engraved leading-none font-extrabold text-ink ${TITLE}`} style={{ textTransform: 'none' }}>
             {m.value}
           </dd>
-          <dd className="mt-1.5 text-[0.8rem] leading-snug text-ink-2">{m.label}</dd>
+          <dd className={`mt-1.5 leading-snug text-ink-2 ${BODY}`}>{m.label}</dd>
         </div>
       ))}
     </dl>
@@ -26,7 +35,7 @@ export function RatingPlate({ items, size = 'lg' }: { items: Metric[]; size?: 'l
 /** Reversed band: black core showing through the ivory face */
 export function Band({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="engraved -mx-5 mt-7 mb-3 bg-ink px-5 py-1.5 text-[0.82rem] font-bold text-tag sm:-mx-6 sm:px-6">{children}</h3>
+    <h3 className={`engraved -mx-5 mt-7 mb-3 bg-ink px-5 py-1.5 font-bold text-tag sm:-mx-6 sm:px-6 ${BODY}`}>{children}</h3>
   )
 }
 
@@ -34,7 +43,7 @@ export function Chips({ items }: { items: string[] }) {
   return (
     <ul className="flex flex-wrap gap-1.5" aria-label="Stack">
       {items.map((s) => (
-        <li key={s} className="engraved rounded-[3px] bg-plate px-2 py-1 text-[0.78rem] font-semibold text-engrave">
+        <li key={s} className={`engraved rounded-[3px] bg-plate px-2 py-1 font-semibold text-engrave ${BODY}`}>
           {s}
         </li>
       ))}
@@ -57,7 +66,7 @@ export function Photos({ room }: { room: Room }) {
             decoding="async"
             className="block h-auto w-full border-2 border-ink bg-tag-2"
           />
-          {p.caption && <figcaption className="mt-1 text-[0.75rem] leading-snug text-ink-2">{p.caption}</figcaption>}
+          {p.caption && <figcaption className={`mt-1 leading-snug text-ink-2 ${BODY}`}>{p.caption}</figcaption>}
         </figure>
       ))}
     </div>
@@ -66,8 +75,8 @@ export function Photos({ room }: { room: Room }) {
 
 export function RoomContent({ room, live = false }: { room: Room; live?: boolean }) {
   return (
-    <div className="text-[0.95rem] leading-relaxed">
-      <p className="text-[1.2rem] font-semibold leading-snug text-balance">{room.hook}</p>
+    <div className={`leading-relaxed ${BODY}`}>
+      <p className="leading-snug font-bold text-balance">{room.hook}</p>
       <div className="mt-5">
         <RatingPlate items={room.metrics} />
       </div>
@@ -79,14 +88,14 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
       <ul className="space-y-2.5">
         {room.did.map((d) => (
           <li key={d} className="relative pl-5">
-            <span aria-hidden className="absolute top-[0.55em] left-0 size-2 bg-ink" />
+            <Dash />
             {d}
           </li>
         ))}
       </ul>
 
       {room.status && room.id !== 'control' && (
-        <p className="mt-4 border-2 border-dashed border-ink px-3 py-2 text-[0.88rem]">{room.status}</p>
+        <p className="mt-4 border-2 border-dashed border-ink px-3 py-2">{room.status}</p>
       )}
 
       {room.features?.map((f) => (
@@ -100,7 +109,7 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
           </div>
           {f.figures && (
             <div className="mt-3">
-              <RatingPlate items={f.figures} size="sm" />
+              <RatingPlate items={f.figures} />
             </div>
           )}
         </section>
@@ -112,7 +121,7 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
           <ul className="space-y-1.5">
             {room.also.map((a) => (
               <li key={a} className="relative pl-5">
-                <span aria-hidden className="absolute top-[0.5em] left-0 size-2 border-2 border-ink" />
+                <Dash />
                 {a}
               </li>
             ))}

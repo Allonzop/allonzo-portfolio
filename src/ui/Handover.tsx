@@ -4,6 +4,7 @@ import { PROFILE } from '../content/profile'
 import { ROOMS } from '../content/rooms'
 import { ACHIEVEMENTS, useStore, type AchievementId } from '../store'
 import { ContactActions, PathList } from './Contact'
+import { Dash } from './RoomContent'
 
 /** The handover certificate: what you get when every room is commissioned */
 export function Handover() {
@@ -47,56 +48,54 @@ export function Handover() {
           >
             <header className="flex items-center gap-3 rounded-t-[6px] bg-ink px-6 py-3 text-tag">
               <span aria-hidden className="size-5 rounded-full border-[4px] border-[#5d5d5d] bg-tag" />
-              <p className="engraved flex-1 text-[0.86rem] font-extrabold">
+              <p className="engraved flex-1 text-[0.92rem] font-extrabold">
                 Handover certificate · {done.length}/{ROOMS.length} rooms · {xp} XP
               </p>
               <button
                 ref={closeRef}
                 type="button"
                 onClick={() => set(false)}
-                className="engraved rounded-[3px] px-2 py-1 text-[0.8rem] font-bold text-tag transition-colors hover:bg-[#2c2c2c]"
+                className="engraved rounded-[3px] px-2 py-1 text-[0.92rem] font-bold text-tag transition-colors hover:bg-[#2c2c2c]"
               >
                 Keep exploring
               </button>
             </header>
-            <div className="grid gap-8 px-6 pt-6 pb-7 md:grid-cols-[1.15fr_1fr]">
+            <div className="grid gap-8 px-6 pt-6 pb-7 text-[0.92rem] md:grid-cols-[1.15fr_1fr]">
               <div>
-                <h2 id="handover-title" className="engraved text-[2.3rem] leading-[0.95] font-extrabold" style={{ textTransform: 'none' }}>
+                <h2 id="handover-title" className="engraved text-[2rem] leading-[0.95] font-extrabold text-balance" style={{ textTransform: 'none' }}>
                   {complete ? 'The plant is handed over' : 'Handover, in progress'}
                 </h2>
-                <p className="mt-3 text-[1.05rem] leading-relaxed">
-                  {PROFILE.name}
+                <p className="mt-3 leading-relaxed">
+                  <span className="font-bold">{PROFILE.name}</span>
                   <br />
                   <span className="text-ink-2">
                     {PROFILE.title} · {PROFILE.subtitle}
                   </span>
                 </p>
                 <p className="mt-4 leading-relaxed">{PROFILE.summary}</p>
-                <ul className="mt-4 space-y-1 text-[0.95rem]">
+                <ul className="mt-4 space-y-1">
                   {PROFILE.availability.map((a) => (
                     <li key={a} className="relative pl-5">
-                      <span aria-hidden className="absolute top-[0.55em] left-0 size-2 bg-ink" />
+                      <Dash />
                       {a}
                     </li>
                   ))}
                 </ul>
-                <p className="reading mt-4 text-[0.8rem] text-ink-2">
-                  {PROFILE.languages.map((l) => `${l.name} (${l.level})`).join(' · ')}
-                </p>
+                <p className="mt-4 text-ink-2">{PROFILE.languages.map((l) => `${l.name}, ${l.level}`).join(' · ')}</p>
               </div>
               <div className="space-y-6">
                 <ContactActions />
                 <div>
-                  <h3 className="engraved mb-2 border-b-2 border-ink pb-1 text-[0.8rem] font-extrabold">Path</h3>
+                  <h3 className="engraved mb-2 border-b-2 border-ink pb-1 font-extrabold">Path</h3>
                   <PathList />
                 </div>
                 <div>
-                  <h3 className="engraved mb-2 border-b-2 border-ink pb-1 text-[0.8rem] font-extrabold">Achievements</h3>
+                  <h3 className="engraved mb-2 border-b-2 border-ink pb-1 font-extrabold">Achievements</h3>
                   <ul className="space-y-1.5">
                     {(Object.keys(ACHIEVEMENTS) as AchievementId[]).map((k) => {
                       const has = got.includes(k)
                       return (
-                        <li key={k} className={`flex items-start gap-2.5 text-[0.92rem] ${has ? '' : 'text-ink-2'}`}>
+                        <li key={k} className={`flex items-start gap-2.5 ${has ? '' : 'text-ink-2'}`}>
                           <span
                             aria-hidden
                             className="mt-1 size-3 shrink-0 border-2 border-ink"
@@ -115,7 +114,7 @@ export function Handover() {
                 <button
                   type="button"
                   onClick={() => setMode('list')}
-                  className="engraved text-[0.82rem] font-bold text-ink underline decoration-1 underline-offset-4"
+                  className="engraved font-bold text-ink underline decoration-1 underline-offset-4"
                 >
                   Read everything as a list
                 </button>

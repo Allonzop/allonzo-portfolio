@@ -54,7 +54,8 @@ function ActiveLight() {
       k = power[id].light
     }
     l.position.lerp(target, 1 - Math.exp(-dt * 4))
-    l.intensity += (k * 34 - l.intensity) * (1 - Math.exp(-dt * 5))
+    const outdoor = id === 'parking' || id === 'boatyard' || id === 'solar'
+    l.intensity += (k * (outdoor ? 16 : 34) - l.intensity) * (1 - Math.exp(-dt * 5))
   })
   return <pointLight ref={ref} color="#ffc68a" intensity={0} distance={12} decay={1.4} position={[0, 2.8, -2.5]} />
 }
@@ -87,7 +88,7 @@ function World() {
   const tap = useFloorTap()
   return (
     <group {...tap}>
-      <StaticBatch room="building" warmth={0.2}>
+      <StaticBatch room="building" warmth={0.2} dark={1}>
         <Building />
       </StaticBatch>
       <Rooms />

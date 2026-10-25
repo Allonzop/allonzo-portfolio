@@ -288,7 +288,7 @@ export function Boatyard() {
       <Workbench p={[15.5, 0, -5.1]} />
       <PlankRack p={[22.5, 0, -5.9]} />
       <Festoon />
-      <LightPool id="boatyard" p={[19.5, 0.02, -0.4]} size={[14, 11]} strength={0.55} />
+      <LightPool id="boatyard" p={[19.5, 0.02, -0.4]} size={[14, 11]} strength={0.3} />
       <group position={[13.9, 0, 4.9]}>
         <Box p={[0, 0.9, 0]} s={[0.1, 1.8, 0.1]} c="#4a3524" />
         <Plate p={[0, 2.0, 0.07]} width={2.1} lines={['BOATYARD', done ? 'PLYMOUTH · ON' : 'PLYMOUTH, UK']} mark={done ? 'filled' : 'hollow'} />

@@ -122,7 +122,8 @@ a {
 .plate.screws::after {
   content: '';
   position: absolute;
-  top: 7px;
+  top: 50%;
+  translate: 0 -50%;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -131,10 +132,10 @@ a {
     var(--color-screw);
 }
 .plate.screws::before {
-  left: 7px;
+  left: 9px;
 }
 .plate.screws::after {
-  right: 7px;
+  right: 9px;
 }
 
 .engraved {

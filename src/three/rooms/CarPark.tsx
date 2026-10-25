@@ -270,9 +270,9 @@ export function CarPark() {
             ctx.fillText(`MQTT   ${parkingSim.sent.toLocaleString('en-GB')}`, 26, 70)
             ctx.fillStyle = '#ff6a5a'
             ctx.fillText(`1 Hz   ${parkingSim.streamMsgs.toLocaleString('en-GB')}`, 26, 130)
-            const saved = parkingSim.streamMsgs ? (1 - parkingSim.sent / parkingSim.streamMsgs) * 100 : 0
+            const saved = parkingSim.sent >= 5 ? `${((1 - parkingSim.sent / parkingSim.streamMsgs) * 100).toFixed(1)} %` : '…'
             ctx.fillStyle = '#ffb04a'
-            ctx.fillText(`SAVED  ${saved.toFixed(1)} %`, 26, 190)
+            ctx.fillText(`SAVED  ${saved}`, 26, 190)
           }}
         />
       </group>

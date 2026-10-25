@@ -28,12 +28,17 @@ const overviewDistance = (aspect: number) => {
   const halfH = Math.tan(THREE.MathUtils.degToRad(17))
   const halfW = halfH * aspect
   // portrait phones frame the building itself; wider screens take in the car park and the boatyard
-  if (aspect < 0.8) return Math.min(110, 15 / halfW)
+  if (aspect < 0.8) return Math.min(110, 11 / halfW)
   return Math.min(140, Math.max(58, 31 / halfW))
 }
 
 /** On a phone the intro tag covers the lower half: aim low so the plant sits in the top half */
-const overviewY = (aspect: number) => (aspect < 0.8 ? -6 : OVERVIEW_Y)
+const overviewY = (aspect: number) => (aspect < 0.8 ? -4.2 : OVERVIEW_Y)
+
+/** Rooms that read best from a set angle: the boatyard looks past the boat to the harbour and the lighthouse */
+const VIEW: Partial<Record<RoomId, { az: number; el: number }>> = {
+  boatyard: { az: -0.62, el: 0.2 },
+}
 
 const roomFocus = (id: RoomId) => {
   const z = ZONES.find((q) => q.id === id)!
@@ -53,6 +58,9 @@ export function CameraRig() {
       target: new THREE.Vector3(0, overviewY(size.width / size.height), -1),
       dist: 0,
       forceDist: false,
+      az: 0,
+      el: 0,
+      forceDir: false,
       shiftX: 0,
       shiftY: 0,
     }),
@@ -76,24 +84,30 @@ export function CameraRig() {
   // zoom to rooms, follow the engineer, make room for the panel
   useEffect(() => {
     const aspect = () => get().size.width / get().size.height
-    const zoomTo = (d: number, dur = 1.4) => {
+    const zoomTo = (d: number, dur = 1.4, view?: { az: number; el: number }) => {
       tween.current?.kill()
       const c = controls.current
       if (!c) return
-      rig.dist = camera.position.distanceTo(c.target)
+      const sph = new THREE.Spherical().setFromVector3(camera.position.clone().sub(c.target))
+      rig.dist = sph.radius
+      rig.az = sph.theta
+      rig.el = Math.PI / 2 - sph.phi
       rig.forceDist = true
+      rig.forceDir = !!view
       tween.current = gsap.to(rig, {
         dist: d,
+        ...(view ? { az: view.az, el: view.el } : {}),
         duration: reduced ? 0.01 : dur,
         ease: 'power3.inOut',
         onComplete: () => {
           rig.forceDist = false
+          rig.forceDir = false
         },
       })
     }
     const unsub = useStore.subscribe((s, prev) => {
       if (s.started && !prev.started) zoomTo(narrow ? 24 : 26, 1.8)
-      if (s.activeRoom && s.activeRoom !== prev.activeRoom) zoomTo(FRAME[s.activeRoom] * (narrow ? 1.25 : 1))
+      if (s.activeRoom && s.activeRoom !== prev.activeRoom) zoomTo(FRAME[s.activeRoom] * (narrow ? 1.25 : 1), 1.4, VIEW[s.activeRoom])
       if (s.panelOpen !== prev.panelOpen) {
         gsap.to(rig, {
           shiftX: s.panelOpen && !narrow ? 1 : 0,
@@ -120,7 +134,8 @@ export function CameraRig() {
     offset.copy(camera.position).sub(c.target)
     rig.target.lerp(goal, k)
     c.target.copy(rig.target)
-    if (rig.forceDist) offset.setLength(rig.dist)
+    if (rig.forceDir) offset.setFromSphericalCoords(rig.dist, Math.PI / 2 - rig.el, rig.az)
+    else if (rig.forceDist) offset.setLength(rig.dist)
     camera.position.copy(rig.target).add(offset)
     c.update()
 

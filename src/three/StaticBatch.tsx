@@ -20,11 +20,14 @@ export function StaticBatch({
   room,
   warmth = 0.5,
   tint = '#ffb36b',
+  dark = 0.2,
 }: {
   children: ReactNode
   room?: RoomId | 'building'
   warmth?: number
   tint?: string
+  /** how much of its own colour an offline surface keeps: offline rooms read dark, commissioning is the reveal */
+  dark?: number
 }) {
   const root = useRef<THREE.Group>(null)
   const lit = useRef<{ mat: Lit; base: THREE.Color }[]>([])
@@ -119,8 +122,11 @@ export function StaticBatch({
 
   useFrame(() => {
     if (!room || !lit.current.length) return
-    const k = power[room].light * warmth
+    const l = power[room].light
+    const k = l * warmth
+    const keep = dark + (1 - dark) * l
     for (const { mat, base } of lit.current) {
+      mat.color.copy(base).multiplyScalar(keep)
       // warm light on the surface's own colour, plus a little of the lamp's colour
       mat.emissive.copy(base).multiply(tintColor.current).multiplyScalar(k)
         .add(tmp.copy(tintColor.current).multiplyScalar(k * 0.06))

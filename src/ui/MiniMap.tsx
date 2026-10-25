@@ -27,9 +27,9 @@ const SHORT: Record<RoomId, string> = {
   arcade: 'ARCADE',
   plant: 'PLANT',
   lab: 'LAB',
-  control: 'CONTROL',
-  parking: 'CAR PARK',
-  boatyard: 'BOATYARD',
+  control: 'CTRL',
+  parking: 'PARK',
+  boatyard: 'YARD',
 }
 
 /** World x (−27…27) to map x, piecewise so the building gets most of the width */
@@ -62,9 +62,9 @@ export function MiniMap() {
   }, [])
 
   return (
-    <nav className="plate screws pointer-events-auto p-2 pt-6" aria-label="Mini-map: walk to a room">
-      <p className="engraved absolute top-2 left-1/2 -translate-x-1/2 text-[0.62rem] font-bold whitespace-nowrap text-[#a59f92]">Synoptic · tap a room</p>
-      <svg viewBox="0 0 180 80" className="block w-[15rem] max-sm:w-[11.5rem]" role="list">
+    <nav className="plate screws pointer-events-auto px-6 pt-2 pb-2" aria-label="Mini-map: walk to a room">
+      <p className="engraved mb-1 text-center text-[0.8rem] font-bold whitespace-nowrap text-[#a59f92] max-sm:hidden">Synoptic · tap a room</p>
+      <svg viewBox="0 0 180 80" className="block w-[18rem] max-sm:w-[12.5rem]" role="list">
         {/* ground line and the quay */}
         <line x1="2" y1="76" x2="178" y2="76" stroke="#5d5d5d" strokeWidth="1" />
         {CELLS.map((c) => {
@@ -98,10 +98,10 @@ export function MiniMap() {
               {/* state mark: hollow offline, filled commissioned */}
               <rect x={c.x + 3} y={c.y + 3} width={5} height={5} fill={on ? '#f1ede2' : 'none'} stroke="#f1ede2" strokeWidth={1} />
               <text
-                x={c.x + 3}
-                y={c.y + (c.h > 18 ? c.h - 4 : 13)}
+                x={c.x + 10}
+                y={c.y + 8.2}
                 fill={on ? '#f1ede2' : '#a59f92'}
-                style={{ font: '700 5.6px "Archivo Variable", sans-serif', fontStretch: '75%', letterSpacing: '0.03em' }}
+                style={{ font: '700 6.4px "Archivo Variable", sans-serif', fontStretch: '75%', letterSpacing: '0.02em' }}
               >
                 {SHORT[c.id]}
               </text>
