@@ -38,9 +38,12 @@ function Item({ t }: { t: Toast }) {
         <span aria-hidden className="size-3.5 shrink-0 border-2 border-current p-[2px]">
           <span className="block size-full bg-current" />
         </span>
-        <p className="engraved text-[0.86rem] leading-tight font-extrabold whitespace-nowrap max-sm:whitespace-normal">
+        <p className="engraved text-[0.86rem] leading-tight font-extrabold whitespace-nowrap">
           {room ? 'Room commissioned' : 'Achievement'}
-          <span className="font-semibold opacity-85"> · {t.kind === 'room' ? ROOM_BY_ID[t.room].code : ACHIEVEMENTS[t.id].title}</span>
+          <span className="font-semibold opacity-85 max-sm:block">
+            <span className="max-sm:hidden"> · </span>
+            {t.kind === 'room' ? ROOM_BY_ID[t.room].code : ACHIEVEMENTS[t.id].title}
+          </span>
         </p>
         <span className="reading ml-1 bg-ink px-2 py-1 text-[0.86rem] leading-none font-bold whitespace-nowrap text-sodium">+{t.xp} XP</span>
       </div>

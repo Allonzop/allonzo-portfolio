@@ -33,17 +33,18 @@ const overviewDistance = (aspect: number) => {
 }
 
 /** On a phone the intro tag covers the lower half: aim low so the plant sits in the top half */
-const overviewY = (aspect: number) => (aspect < 0.8 ? -4.2 : OVERVIEW_Y)
+const overviewY = (aspect: number) => (aspect < 0.8 ? 0.6 : OVERVIEW_Y)
 
 /** Rooms that read best from a set angle: the boatyard looks past the boat to the harbour and the lighthouse */
 const VIEW: Partial<Record<RoomId, { az: number; el: number }>> = {
-  boatyard: { az: -0.62, el: 0.2 },
+  boatyard: { az: -0.75, el: 0.18 },
 }
 
 const roomFocus = (id: RoomId) => {
   const z = ZONES.find((q) => q.id === id)!
   const r = z.rect
-  return new THREE.Vector3((r.x0 + r.x1) / 2, LEVEL_Y[z.level] + 1.3, Math.min(r.z1, 1.5) - 2.2 + (id === 'parking' || id === 'boatyard' ? 1.5 : 0))
+  // the boatyard aims a little high so the lighthouse sits clear of the HUD and the toast
+  return new THREE.Vector3((r.x0 + r.x1) / 2, LEVEL_Y[z.level] + (id === 'boatyard' ? 2.4 : 1.3), Math.min(r.z1, 1.5) - 2.2 + (id === 'parking' || id === 'boatyard' ? 1.5 : 0))
 }
 
 export function CameraRig() {

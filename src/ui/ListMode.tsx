@@ -67,12 +67,13 @@ export default function ListMode() {
         {/* identity: the building's main nameplate */}
         <section className="pt-10 pb-8 sm:pt-16">
           <div className="plate screws px-10 py-6 text-[clamp(1.25rem,3.6vw,2rem)] leading-tight max-sm:px-8">
-            <h1 className="engraved font-extrabold">{PROFILE.name}</h1>
-            <p className="engraved font-semibold text-[#d9d3c5]">{PROFILE.title}</p>
-            <p className="engraved font-semibold text-[#a59f92]">{PROFILE.subtitle}</p>
+            {/* the name is the reversed field: ivory core cut through the black face */}
+            <h1 className="engraved inline-block bg-engrave px-3 py-1 font-extrabold text-plate">{PROFILE.name}</h1>
+            <p className="engraved mt-2 font-semibold text-[#d9d3c5]">{PROFILE.title}</p>
           </div>
           <div className="mt-6 grid gap-6 md:grid-cols-[1.2fr_1fr] [&>*]:min-w-0">
             <div className="text-[1.05rem] leading-relaxed text-[#ddd7ca]">
+              <p className="mb-3 font-semibold text-engrave">{PROFILE.subtitle}.</p>
               <p>{PROFILE.summary}</p>
               <ul className="mt-4 space-y-1.5 text-[0.98rem]">
                 {PROFILE.availability.map((a) => (
