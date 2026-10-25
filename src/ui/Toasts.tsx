@@ -44,7 +44,7 @@ function Item({ t }: { t: Toast }) {
 export function Toasts() {
   const toasts = useStore((s) => s.toasts)
   return (
-    <ol className="absolute top-24 left-1/2 flex -translate-x-1/2 flex-col items-center gap-6 max-sm:top-32" aria-live="polite">
+    <ol className="absolute top-24 left-1/2 flex -translate-x-1/2 flex-col items-center gap-6 max-sm:top-[8.6rem]" aria-live="polite">
       <AnimatePresence>
         {toasts.slice(-3).map((t) => (
           <Item key={t.key} t={t} />

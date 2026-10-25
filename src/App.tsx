@@ -1,9 +1,8 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useStore } from './store'
-import { Hud } from './ui/Hud'
-import { ListMode } from './ui/ListMode'
 
-const Experience = lazy(() => import('./three/Experience'))
+const Game = lazy(() => import('./Game'))
+const ListMode = lazy(() => import('./ui/ListMode'))
 
 const hasWebGL = () => {
   try {
@@ -16,22 +15,9 @@ const hasWebGL = () => {
 
 export default function App() {
   const mode = useStore((s) => s.mode)
-  const forceFallback = useStore((s) => s.forceFallback)
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    if (mode === 'game' && !hasWebGL()) forceFallback()
-    setReady(true)
-  }, [mode, forceFallback])
-
-  if (!ready) return null
-  if (mode === 'list') return <ListMode />
-  return (
-    <>
-      <Suspense fallback={null}>
-        <Experience />
-      </Suspense>
-      <Hud />
-    </>
-  )
+  // no WebGL: straight to the list, before anything 3D is fetched
+  useState(() => {
+    if (useStore.getState().mode === 'game' && !hasWebGL()) useStore.getState().forceFallback()
+  })
+  return <Suspense fallback={null}>{mode === 'list' ? <ListMode /> : <Game />}</Suspense>
 }

@@ -1,5 +1,5 @@
 import type { Metric, Room } from '../content/rooms'
-import { CardFlip } from './CardFlip'
+import { CardFan, CardFlip } from './CardFlip'
 import { ParkingCounter } from './ParkingCounter'
 
 /** Rating-plate grid: the fields engraved on a piece of equipment */
@@ -73,7 +73,7 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
       </div>
 
       {room.id === 'parking' && live && <ParkingCounter live />}
-      {room.id === 'arcade' && <CardFlip />}
+      {room.id === 'arcade' && (live ? <CardFlip /> : <CardFan />)}
 
       <Band>What I did</Band>
       <ul className="space-y-2.5">

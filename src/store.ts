@@ -60,7 +60,7 @@ let toastKey = 0
 const initialMode = (): Mode => {
   if (typeof window === 'undefined') return 'game'
   const q = new URLSearchParams(window.location.search)
-  if (q.get('view') === 'list' || window.location.hash === '#list') return 'list'
+  if (window.location.pathname.startsWith('/list') || q.get('view') === 'list' || window.location.hash === '#list') return 'list'
   return 'game'
 }
 
@@ -87,8 +87,8 @@ export const useStore = create<State>((set, get) => ({
   setMode: (mode) => {
     set({ mode })
     const url = new URL(window.location.href)
-    if (mode === 'list') url.searchParams.set('view', 'list')
-    else url.searchParams.delete('view')
+    url.pathname = mode === 'list' ? '/list' : '/'
+    url.searchParams.delete('view')
     url.hash = ''
     window.history.replaceState(null, '', url)
   },
@@ -149,4 +149,4 @@ export const useStore = create<State>((set, get) => ({
   setParking: (p) => set({ parking: { ...get().parking, ...p } }),
 }))
 
-if (import.meta.env.DEV || location.search.includes('debug')) (window as unknown as { __store: typeof useStore }).__store = useStore
+if (typeof window !== 'undefined' && (import.meta.env.DEV || location.search.includes('debug'))) (window as unknown as { __store: typeof useStore }).__store = useStore

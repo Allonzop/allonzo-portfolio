@@ -25,6 +25,7 @@ export function CopyEmail({ tone = 'tag' }: { tone?: 'tag' | 'plate' }) {
       </a>
       <button
         type="button"
+        data-copy={PROFILE.email}
         onClick={copy}
         className={`engraved min-w-[6.5rem] px-3 text-[0.82rem] font-extrabold transition-colors ${
           copied ? 'bg-go text-go-ink' : dark ? 'bg-engrave text-ink hover:bg-white' : 'bg-ink text-tag hover:bg-[#2a2a2a]'

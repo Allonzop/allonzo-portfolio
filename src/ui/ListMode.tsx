@@ -6,7 +6,7 @@ import { ContactActions, PathList } from './Contact'
 import { RoomContent } from './RoomContent'
 
 /** The fast path: the same projects as a clean scrolling list */
-export function ListMode() {
+export default function ListMode() {
   const setMode = useStore((s) => s.setMode)
   const fallback = useStore((s) => s.fallback)
   const done = useStore((s) => s.commissioned)
@@ -25,7 +25,6 @@ export function ListMode() {
           gsap.from(el, {
             rotate: -1.2,
             y: 28,
-            opacity: 0.35,
             duration: 0.9,
             ease: 'expo.out',
             transformOrigin: '50% 0%',
@@ -44,13 +43,16 @@ export function ListMode() {
         <div className="mx-auto flex max-w-[60rem] items-center justify-between gap-3 px-4 py-3">
           <p className="engraved text-[1rem] font-extrabold">{PROFILE.name}</p>
           {!fallback && (
-            <button
-              type="button"
-              onClick={() => setMode('game')}
-              className="engraved rounded-[5px] border-2 border-[#d6cfbd] bg-tag px-4 py-2 text-[0.84rem] font-extrabold text-ink transition-colors hover:bg-white"
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault()
+                setMode('game')
+              }}
+              className="engraved rounded-[5px] border-2 border-[#d6cfbd] bg-tag px-4 py-2 text-[0.84rem] font-extrabold text-ink no-underline transition-colors hover:bg-white"
             >
               Play the 3D plant
-            </button>
+            </a>
           )}
         </div>
       </header>

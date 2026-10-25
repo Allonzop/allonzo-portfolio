@@ -1,5 +1,4 @@
-import { useFrame } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import * as THREE from 'three'
 import { useStore } from '../../store'
 import { Box, LightPool, useGlow, type V3 } from '../common'
@@ -240,20 +239,6 @@ function Shed() {
   )
 }
 
-function Ripples() {
-  // little lap of water at the foot of the slipway
-  const ref = useRef<THREE.Mesh>(null)
-  useFrame(({ clock }) => {
-    if (ref.current) (ref.current.material as THREE.MeshBasicMaterial).opacity = 0.06 + Math.sin(clock.elapsedTime * 1.6) * 0.03
-  })
-  return (
-    <mesh ref={ref} position={[19.5, -0.82, 8]} rotation={[-Math.PI / 2, 0, 0]}>
-      <ringGeometry args={[1.2, 1.5, 24]} />
-      <meshBasicMaterial color="#9fc2e8" transparent opacity={0.2} depthWrite={false} />
-    </mesh>
-  )
-}
-
 export function Boatyard() {
   const done = useStore((s) => s.commissioned.includes('boatyard'))
   void power
@@ -303,7 +288,6 @@ export function Boatyard() {
       <Workbench p={[15.5, 0, -5.1]} />
       <PlankRack p={[22.5, 0, -5.9]} />
       <Festoon />
-      <Ripples />
       <LightPool id="boatyard" p={[19.5, 0.02, -0.4]} size={[14, 11]} strength={0.55} />
       <group position={[13.9, 0, 4.9]}>
         <Box p={[0, 0.9, 0]} s={[0.1, 1.8, 0.1]} c="#4a3524" />

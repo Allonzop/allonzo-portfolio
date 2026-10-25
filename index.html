@@ -5,6 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#050a14" />
+    <link rel="preload" href="/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/b612-mono-400.woff2" as="font" type="font/woff2" crossorigin />
     <title>Allonzo Pensabene · Building Automation & Energy Engineer</title>
     <meta
       name="description"
@@ -15,10 +17,14 @@
     <meta property="og:type" content="website" />
     <style>
       html, body { background: #050a14; margin: 0; }
+      .boot { position: fixed; inset: 0; display: grid; place-content: center; gap: 10px; text-align: center; color: #f1ede2; font-family: 'Archivo Variable', 'Arial Narrow', sans-serif; }
+      .boot-name { margin: 0; font-size: 28px; font-weight: 800; font-stretch: 75%; text-transform: uppercase; letter-spacing: 0.04em; }
+      .boot-line { margin: 0; font-size: 14px; color: #a59f92; }
+      .boot-link { justify-self: center; margin-top: 8px; color: #ffb04a; font-size: 14px; text-underline-offset: 4px; }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><!--shell--><div class="boot"><p class="boot-name">Allonzo Pensabene</p><p class="boot-line">Building Automation &amp; Energy Engineer · powering up the plant</p><a class="boot-link" href="/list">Read it as a list</a></div><!--/shell--></div>
     <noscript>
       <p style="color:#f1ede2;font-family:sans-serif;padding:24px">Allonzo Pensabene, Building Automation &amp; Energy Engineer. Contact: allonzopensa@gmail.com</p>
     </noscript>

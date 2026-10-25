@@ -20,6 +20,18 @@ const CELLS: { id: RoomId; x: number; y: number; w: number; h: number }[] = [
 
 const LEVEL_FLOOR = [74, 48, 22]
 
+/** Short engraved labels that fit the synoptic cells */
+const SHORT: Record<RoomId, string> = {
+  solar: 'ROOF',
+  studio: 'STUDIO',
+  arcade: 'ARCADE',
+  plant: 'PLANT',
+  lab: 'LAB',
+  control: 'CONTROL',
+  parking: 'CAR PARK',
+  boatyard: 'BOATYARD',
+}
+
 /** World x (−27…27) to map x, piecewise so the building gets most of the width */
 const mapX = (x: number) => {
   if (x < -11) return 4 + ((x + 27) / 16) * 36
@@ -87,11 +99,11 @@ export function MiniMap() {
               <rect x={c.x + 3} y={c.y + 3} width={5} height={5} fill={on ? '#f1ede2' : 'none'} stroke="#f1ede2" strokeWidth={1} />
               <text
                 x={c.x + 3}
-                y={c.y + c.h - 4}
+                y={c.y + (c.h > 18 ? c.h - 4 : 13)}
                 fill={on ? '#f1ede2' : '#a59f92'}
-                style={{ font: '700 6px "Archivo Variable", sans-serif', fontStretch: '75%', letterSpacing: '0.04em' }}
+                style={{ font: '700 5.6px "Archivo Variable", sans-serif', fontStretch: '75%', letterSpacing: '0.03em' }}
               >
-                {room.code}
+                {SHORT[c.id]}
               </text>
             </g>
           )

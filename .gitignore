@@ -31,3 +31,4 @@ _drive/
 _work/
 .netlify
 .claude/
+dist-ssr
