@@ -7,6 +7,7 @@ import { Handover } from './Handover'
 import { MiniMap } from './MiniMap'
 import { RoomPanel } from './RoomPanel'
 import { useAmbientSound } from './sound'
+import { Intro } from './Intro'
 import { Toasts } from './Toasts'
 
 function Mark({ on, size = 10 }: { on: boolean; size?: number }) {
@@ -41,7 +42,7 @@ function Progress() {
         </p>
         <div className="mt-1.5 flex items-center gap-1" role="progressbar" aria-valuemin={0} aria-valuemax={ROOMS.length} aria-valuenow={done.length} aria-label="Rooms commissioned">
           {ROOMS.map((r, i) => (
-            <span key={r.id} className="relative block h-2.5 w-5 border border-[#6d6a62] max-sm:w-3.5">
+            <span key={r.id} className={`relative block h-2.5 w-5 border max-sm:w-3.5 ${i < done.length ? 'border-sodium' : 'border-line'}`}>
               <motion.span
                 className="absolute inset-0 bg-sodium"
                 initial={false}
@@ -167,76 +168,6 @@ function LiftControl() {
   )
 }
 
-function Intro() {
-  const started = useStore((s) => s.started)
-  const start = useStore((s) => s.start)
-  const setMode = useStore((s) => s.setMode)
-  const coarse = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
-  return (
-    <AnimatePresence>
-      {!started && (
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] } }}
-          exit={{ opacity: 0, y: 18, transition: { duration: 0.3 } }}
-          className="tag pointer-events-auto relative mx-auto w-[min(34rem,100%)] rounded-[6px] border-2 border-tag-line px-6 pt-6 pb-5 shadow-[0_18px_40px_-12px_rgb(0_0_0/0.8)] max-sm:px-4 max-sm:pt-5 max-sm:pb-4"
-        >
-          <span aria-hidden className="absolute -top-3 left-1/2 size-6 -translate-x-1/2 rounded-full border-[5px] border-[#9a9384] bg-night" />
-          <h1 className="engraved text-[1.65rem] leading-none font-extrabold max-sm:text-[1.25rem]">The plant is offline</h1>
-          <p className="mt-3 text-[1rem] leading-relaxed text-ink-2 max-sm:mt-2 max-sm:text-[0.9rem] max-sm:leading-snug">
-            I'm {PROFILE.name}, a building automation and energy engineer. Each room of this building is one of my projects. Walk in to commission it,
-            and the lights come on.
-          </p>
-          <p className="mt-3 text-[0.92rem] font-bold text-ink max-sm:text-[0.86rem]">
-            {coarse ? 'Tap the floor to walk. Drag to look around.' : 'WASD or arrows to walk, or click the floor. Drag to orbit.'}
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2 max-sm:mt-4 [&>button]:max-sm:px-3.5 [&>button]:max-sm:py-2.5 [&>button]:max-sm:text-[0.82rem]">
-            <button
-              type="button"
-              onClick={start}
-              className="engraved rounded-[3px] bg-go px-5 py-3 text-[0.95rem] font-extrabold text-go-ink transition-colors hover:bg-[#28825a]"
-            >
-              Start commissioning
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('list')}
-              className="engraved rounded-[3px] border-2 border-ink px-5 py-3 text-[0.95rem] font-extrabold text-ink transition-colors hover:bg-ink hover:text-tag"
-            >
-              Read it as a list
-            </button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  )
-}
-
-function PoweringUp() {
-  const ready = useStore((s) => s.sceneReady)
-  return (
-    <AnimatePresence>
-      {!ready && (
-        <motion.div
-          exit={{ opacity: 0, transition: { duration: 0.5 } }}
-          className="absolute inset-x-0 top-[38%] flex justify-center"
-          role="status"
-        >
-          <div className="plate screws flex items-center gap-3 px-7 py-3">
-          <motion.span
-            aria-hidden
-            className="size-3 border-2 border-sodium"
-            animate={{ backgroundColor: ['rgba(255,176,74,0)', 'rgba(255,176,74,1)', 'rgba(255,176,74,0)'] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-          />
-          <span className="engraved text-[0.85rem] font-bold whitespace-nowrap">Powering up the plant</span>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  )
-}
-
 function HandoverButton() {
   const seen = useStore((s) => s.handoverSeen)
   const open = useStore((s) => s.setHandover)
@@ -254,37 +185,50 @@ function HandoverButton() {
   )
 }
 
+/** HUD plates are bolted on once the plant is energised, one after another */
+function Bolt({ i, from, className, children }: { i: number; from: 'top' | 'bottom'; className: string; children: React.ReactNode }) {
+  const started = useStore((s) => s.started)
+  const reduce = useReducedMotion()
+  if (!started) return null
+  return (
+    <motion.div
+      className={className}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: from === 'top' ? -24 : 24 }}
+      animate={{ opacity: 1, y: 0, transition: { delay: reduce ? 0 : 1.5 + i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] } }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 export function Hud() {
   useAmbientSound()
   return (
     <div className="pointer-events-none fixed inset-0 z-10 select-none">
-      <div className="absolute top-4 right-4 left-4 flex items-start justify-between gap-3 max-sm:top-3 max-sm:right-3 max-sm:left-3">
+      <Bolt i={0} from="top" className="absolute top-4 right-4 left-4 flex items-start justify-between gap-3 max-sm:top-3 max-sm:right-3 max-sm:left-3">
         <Identity />
         <div className="absolute left-1/2 -translate-x-1/2 max-lg:static max-lg:translate-x-0 max-sm:hidden">
           <Progress />
         </div>
         <Controls />
-      </div>
-      <div className="absolute top-[4.6rem] left-3 sm:hidden">
+      </Bolt>
+      <Bolt i={1} from="top" className="absolute top-[4.6rem] left-3 sm:hidden">
         <Progress />
-      </div>
-      <PoweringUp />
+      </Bolt>
       <Toasts />
-      <div className="absolute bottom-4 left-4 flex items-end gap-2">
+      <Bolt i={2} from="bottom" className="absolute bottom-4 left-4 flex items-end gap-2">
         <Readings />
         <HandoverButton />
-      </div>
-      <div className="absolute right-4 bottom-4 max-sm:right-3 max-sm:bottom-3">
+      </Bolt>
+      <Bolt i={3} from="bottom" className="absolute right-4 bottom-4 max-sm:right-3 max-sm:bottom-3">
         <MiniMap />
-      </div>
+      </Bolt>
       <div className="absolute bottom-24 left-1/2 -translate-x-1/2 max-sm:bottom-40">
         <LiftControl />
       </div>
-      <div className="absolute inset-x-4 bottom-6 flex justify-center max-sm:bottom-4">
-        <Intro />
-      </div>
       <RoomPanel />
       <Handover />
+      <Intro />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { useStore } from '../store'
 import { Box, useGlow, type V3 } from './common'
+import { power } from './power'
 import { StaticBatch } from './StaticBatch'
 
 const skyVert = /* glsl */ `
@@ -330,8 +331,13 @@ function Town() {
 
 /** Sodium street lamp with a baked pool of light on the ground */
 export function StreetLamp({ p, pool = true }: { p: V3; pool?: boolean }) {
-  const head = useGlow('building', '#ffb15c', 0, 'light', 2.6)
+  // dark until the visitor energises the site
+  const head = useGlow('site', '#ffb15c', 2.6, 'light', 0.03)
   const tex = useMemo(() => poolTexture(), [])
+  const poolMat = useRef<THREE.MeshBasicMaterial>(null)
+  useFrame(() => {
+    if (poolMat.current) poolMat.current.opacity = power.site.light
+  })
   return (
     <group position={p}>
       <mesh position={[0, 2.2, 0]}>
@@ -348,7 +354,7 @@ export function StreetLamp({ p, pool = true }: { p: V3; pool?: boolean }) {
       {pool && (
         <mesh position={[0.65, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[7, 7]} />
-          <meshBasicMaterial map={tex} transparent depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+          <meshBasicMaterial ref={poolMat} map={tex} transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
         </mesh>
       )}
     </group>

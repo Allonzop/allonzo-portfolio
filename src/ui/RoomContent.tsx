@@ -1,4 +1,6 @@
-import type { Metric, Room } from '../content/rooms'
+import { useState } from 'react'
+import { createPortal } from 'react-dom'
+import type { Metric, Photo, Room } from '../content/rooms'
 
 /** Two sizes per tag: TITLE for the room title and every figure, BODY for everything else */
 export const TITLE = 'text-[2rem] max-sm:text-[1.7rem]'
@@ -34,9 +36,7 @@ export function RatingPlate({ items }: { items: Metric[] }) {
 
 /** Reversed band: black core showing through the ivory face */
 export function Band({ children }: { children: React.ReactNode }) {
-  return (
-    <h3 className={`engraved -mx-5 mt-7 mb-3 bg-ink px-5 py-1.5 font-bold text-tag sm:-mx-6 sm:px-6 ${BODY}`}>{children}</h3>
-  )
+  return <h3 className={`engraved -mx-5 mt-7 mb-3 bg-ink px-5 py-1.5 font-bold text-tag sm:-mx-6 sm:px-6 ${BODY}`}>{children}</h3>
 }
 
 export function Chips({ items }: { items: string[] }) {
@@ -51,25 +51,63 @@ export function Chips({ items }: { items: string[] }) {
   )
 }
 
-export function Photos({ room }: { room: Room }) {
-  if (!room.photos.length) return null
+/** Evidence prints: real figures pinned to the tag; tap one to read it full size */
+export function Photos({ photos }: { photos: Photo[] }) {
+  const [open, setOpen] = useState<Photo | null>(null)
+  if (!photos.length) return null
   return (
-    <div className={`grid gap-2 ${room.photos.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-      {room.photos.map((p, i) => (
-        <figure key={p.src} className={room.photos.length === 3 && i === 0 ? 'col-span-2' : ''}>
-          <img
-            src={p.src}
-            alt={p.alt}
-            width={p.w}
-            height={p.h}
-            loading="lazy"
-            decoding="async"
-            className="block h-auto w-full border-2 border-ink bg-tag-2"
-          />
-          {p.caption && <figcaption className={`mt-1 leading-snug text-ink-2 ${BODY}`}>{p.caption}</figcaption>}
-        </figure>
-      ))}
-    </div>
+    <>
+      <div className={`grid gap-3 ${photos.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+        {photos.map((p, i) => {
+          // the lead print hugs its own shape; the others sit in matched frames
+          const lead = photos.length === 1 || (photos.length === 3 && i === 0)
+          return (
+            <figure key={p.src} className={lead && photos.length > 1 ? 'col-span-2' : ''}>
+              {/* a link, so the static list page still opens the full image without scripts */}
+              <a
+                href={p.src}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setOpen(p)
+                }}
+                className={`group relative cursor-zoom-in border-2 border-ink bg-white p-1 ${lead ? 'inline-block max-w-full align-top' : 'block w-full'}`}
+                aria-label={`Enlarge: ${p.alt}`}
+              >
+                <img
+                  src={p.src}
+                  alt={p.alt}
+                  width={p.w}
+                  height={p.h}
+                  loading="lazy"
+                  decoding="async"
+                  className={lead ? 'block h-auto max-h-[22rem] w-auto max-w-full' : 'block aspect-[4/3] w-full object-contain'}
+                />
+                <span className="reading absolute top-0 left-0 bg-ink px-1.5 py-0.5 text-[0.7rem] text-tag">FIG {String(i + 1).padStart(2, '0')}</span>
+              </a>
+              {p.caption && <figcaption className={`mt-1.5 leading-snug text-ink-2 ${BODY}`}>{p.caption}</figcaption>}
+            </figure>
+          )
+        })}
+      </div>
+      {open &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={open.alt}
+            onClick={() => setOpen(null)}
+            onKeyDown={(e) => e.key === 'Escape' && setOpen(null)}
+            className="fixed inset-0 z-[80] flex cursor-zoom-out flex-col items-center justify-center gap-3 bg-[rgb(3_6_12/0.92)] p-4 backdrop-blur-sm"
+          >
+            <img src={open.src} alt={open.alt} className="max-h-[82svh] max-w-full border-4 border-tag bg-white object-contain" />
+            {open.caption && <p className="max-w-[46rem] text-center text-[0.92rem] text-engrave">{open.caption}</p>}
+            <button autoFocus type="button" className="engraved rounded-[3px] bg-tag px-4 py-2 text-[0.84rem] font-extrabold text-ink">
+              Close
+            </button>
+          </div>,
+          document.body,
+        )}
+    </>
   )
 }
 
@@ -94,9 +132,7 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
         ))}
       </ul>
 
-      {room.status && room.id !== 'control' && (
-        <p className="mt-4 border-2 border-dashed border-ink px-3 py-2">{room.status}</p>
-      )}
+      {room.status && room.id !== 'control' && <p className="mt-4 border-2 border-dashed border-ink px-3 py-2">{room.status}</p>}
 
       {room.features?.map((f) => (
         <section key={f.title}>
@@ -110,6 +146,11 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
           {f.figures && (
             <div className="mt-3">
               <RatingPlate items={f.figures} />
+            </div>
+          )}
+          {f.photos && (
+            <div className="mt-4">
+              <Photos photos={f.photos} />
             </div>
           )}
         </section>
@@ -133,8 +174,8 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
 
       {room.photos.length > 0 && (
         <>
-          <Band>On site</Band>
-          <Photos room={room} />
+          <Band>Evidence</Band>
+          <Photos photos={room.photos} />
         </>
       )}
 

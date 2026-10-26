@@ -66,7 +66,7 @@ export function MiniMap() {
       <p className="engraved mb-1 text-center text-[0.8rem] font-bold whitespace-nowrap text-[#a59f92] max-sm:hidden">Synoptic · tap a room</p>
       <svg viewBox="0 0 180 80" className="block w-[18rem] max-sm:w-[12.5rem]" role="list">
         {/* ground line and the quay */}
-        <line x1="2" y1="76" x2="178" y2="76" stroke="#5d5d5d" strokeWidth="1" />
+        <line x1="2" y1="76" x2="178" y2="76" stroke="#2f6f95" strokeWidth="1" />
         {CELLS.map((c) => {
           const on = done.includes(c.id)
           const isActive = active === c.id
@@ -91,16 +91,16 @@ export function MiniMap() {
                 y={c.y}
                 width={c.w}
                 height={c.h}
-                fill={on ? 'rgba(255,176,74,0.28)' : 'transparent'}
-                stroke={isActive ? '#ffb04a' : on ? '#f1ede2' : '#6d6a62'}
+                fill={on ? 'rgba(255,176,74,0.3)' : 'rgba(94,200,255,0.06)'}
+                stroke={isActive ? '#ffb04a' : on ? '#ffcf8a' : '#5ec8ff'}
                 strokeWidth={isActive ? 2 : 1.2}
               />
               {/* state mark: hollow offline, filled commissioned */}
-              <rect x={c.x + 3} y={c.y + 3} width={5} height={5} fill={on ? '#f1ede2' : 'none'} stroke="#f1ede2" strokeWidth={1} />
+              <rect x={c.x + 3} y={c.y + 3} width={5} height={5} fill={on ? '#ffcf8a' : 'none'} stroke={on ? '#ffcf8a' : '#5ec8ff'} strokeWidth={1} />
               <text
                 x={c.x + 10}
                 y={c.y + 8.2}
-                fill={on ? '#f1ede2' : '#a59f92'}
+                fill={on ? '#f1ede2' : '#8fd8ff'}
                 style={{ font: '700 6.4px "Archivo Variable", sans-serif', fontStretch: '75%', letterSpacing: '0.02em' }}
               >
                 {SHORT[c.id]}

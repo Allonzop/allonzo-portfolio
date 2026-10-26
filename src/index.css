@@ -62,6 +62,9 @@
   --color-go-ink: #f4f1e6;
   --color-sodium: #ffb04a;
   --color-reading: #ffcf8a;
+  /* blueprint: what is drawn but not yet live */
+  --color-line: #5ec8ff;
+  --color-line-dim: #2f6f95;
 }
 
 :root {
@@ -143,6 +146,17 @@ a {
   font-stretch: 75%;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+/* drafting grid: the plant before it is built */
+.blueprint {
+  background-image:
+    linear-gradient(rgb(94 200 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(94 200 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(rgb(94 200 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(94 200 255 / 0.035) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  background-position: -1px -1px;
 }
 
 /* the tag: ivory lamacoid, black core for reversed bands */

@@ -22,6 +22,8 @@ colors:
   go-signal: "#8ee0b0"
   sodium: "#ffb04a"
   reading: "#ffcf8a"
+  line: "#5ec8ff"
+  line-dim: "#2f6f95"
 typography:
   display:
     fontFamily: "Archivo Variable, Archivo Fallback, Arial Narrow, sans-serif"
@@ -129,11 +131,14 @@ The site is a plant at night being commissioned room by room, and every piece of
 
 Density is that of a labelled control panel: small, heavy, upper-case legends on the HUD; generous, readable body on the tags where the CV lives. Figures are the loudest thing on any tag, set at the same size as the title. Data (readings, XP, dates, email) is the only place a monospace appears. The scene behind it is sodium-warm inside and cold blue night outside, and the interface borrows exactly those two temperatures: sodium for live values and focus, night for the ground.
 
+Offline, the plant is not dark but drawn: every room is cyan linework on blueprint blue, and commissioning hands the drawing over to warm light, the lines flickering out as the tubes flicker on. The visitor sees the whole portfolio as a technical drawing first, and turns it into a lit building room by room.
+
 The world explicitly refuses the category default of a dark SCADA dashboard with neon accents and monospace everywhere. State is carried by a mark, not by a glow.
 
 **Key Characteristics:**
 - Black phenolic plates with ivory engraved condensed caps and centred end screws for all HUD chrome.
 - One ivory lamacoid tag with reversed black bands and an eyelet for every body of content (room panel, handover, list cards).
+- Offline is a drawing (cyan linework), live is light (sodium and warm surfaces).
 - State as a mark: hollow square offline, filled square commissioned.
 - Two type sizes on a content tag; one size per HUD plate; rank by weight, case and reversal.
 - Archivo condensed for engraving, Archivo normal width for reading, B612 Mono only for data.
@@ -149,6 +154,7 @@ Two material families (black phenolic and ivory lamacoid) on a blue-night ground
 ### Secondary
 - **Sodium Amber** (sodium): live energy. XP figures, the commissioning progress fill, the active lift level, the focus ring, text selection, and the bullet dash on the night ground. Never a surface colour.
 - **Warm Reading** (reading): live BMS values on the readings plate, the lit-filament tint of sodium.
+- **Blueprint Line** (line) and **Line Dim** (line-dim): the drawing. 3D edges of offline rooms, offline mini-map cells, empty progress segments, the drafting grid behind the list page. Never used for text on ivory.
 - **Signal Green** (go-signal): the word "Commissioned" on a black tag band, beside the filled mark.
 
 ### Neutral
@@ -162,7 +168,7 @@ Two material families (black phenolic and ivory lamacoid) on a blue-night ground
 ### Named Rules
 **The Mark Not Hue Rule.** State is a square mark: hollow is offline, filled (with an inset rim) is commissioned. Colour may accompany a mark; it never carries state alone.
 
-**The Two Hues Rule.** Only commissioning green and sodium amber act. Green means done or do; amber means live. No other accent enters.
+**The Three Signals Rule.** Cyan means drawn, not yet live; sodium amber means live; commissioning green means done or do. No other accent enters, and the hazard band on the opening tag is sodium on ink.
 
 ## Typography
 
@@ -240,6 +246,12 @@ Engraved controls: condensed caps, extra-bold, flat colour, no shadow of their o
 - **Synoptic mini-map:** a plate holding an SVG plan; rooms are hit areas whose focus ring is sodium.
 - **List room index:** small phenolic plates with the state mark, the code in caps and the title in faint sentence case; hover lights the rim sodium.
 
+### Lockout Tag (opening)
+The first screen is one tag, alone, over the dimmed blueprint: a sodium-and-ink hazard band, an ink band reading "Locked out · do not operate", the title "Plant offline" in Archivo at 62% width, weight 900, clamp(3.4rem, 13vw, 6.4rem), a short brief, and "Isolated by" with the name. It drops and swings in from the hasp; its lines rise in sequence. The primary action is press-and-hold for 0.7s ("Hold to energise"), a breaker closing; a short press answers "Keep holding", and Enter or Space act at once, as does any press under reduced motion. On release the tag falls away, a sodium flash crosses the screen, the yard's lamps strike, the camera dollies from the establishing shot to the engineer, and the HUD plates bolt on one after another. The HUD is absent until then.
+
+### Evidence prints
+Real figures from the source documents sit under the feature they prove, in 2px ink frames on white with a "FIG 01" mono stub; the lead print hugs its own shape, the others share 4:3 frames. Each opens full size on tap; on the static list page each is a plain link to the image.
+
 ### Commissioning Tag (signature)
 A die-cut tag hung on a wire drawn from above through a reinforced eyelet. Green for a commissioned room, phenolic black for an achievement. It carries the filled mark, a condensed caps line and an XP stub (B612 Mono in sodium on an ink chip). It drops 36px from a -10 degree tilt and swings (-10, 5, -2.5, 1, 0 degrees) to rest on the wire over 0.9s with an exponential ease-out, pivoting on its eyelet; it lifts off in 0.25s. At most three hang at once.
 
@@ -265,4 +277,5 @@ Tags enter on an exponential ease-out (cubic-bezier(0.16, 1, 0.3, 1)): the room 
 - **Don't** carry state by colour alone, or add accents beyond commissioning green and sodium amber.
 - **Don't** set labels, headings or prose in the monospace.
 - **Don't** use hard offset shadows or coloured glows; depth is soft and hung.
-- **Don't** show an empty photo frame; omit the photo block until real site photos exist.
+- **Don't** show an empty photo frame; a room without real figures has no evidence block.
+- **Don't** show client names in evidence: crop them out or leave the figure out.

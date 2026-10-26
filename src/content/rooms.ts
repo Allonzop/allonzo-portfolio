@@ -17,6 +17,8 @@ export type Feature = {
   lead?: string
   body: string[]
   figures?: Metric[]
+  /** Evidence shown under this feature */
+  photos?: Photo[]
 }
 
 export type Room = {
@@ -70,6 +72,11 @@ export const ROOMS: Room[] = [
           { value: '6', label: 'support points' },
           { value: '3 days', label: 'to install' },
         ],
+        photos: [
+          { src: '/media/solar/parapet-site.webp', alt: 'A PV module standing vertically on its frame along a rooftop parapet', caption: 'On site: a module held vertically along the parapet.', w: 908, h: 1210 },
+          { src: '/media/solar/frame-model.webp', alt: 'SketchUp model of the vertical frame fixed to the parapet', caption: 'The frame, first sketched in SketchUp.', w: 584, h: 432 },
+          { src: '/media/solar/frame-robot.webp', alt: 'Four load cases of the frame in Robot Structural Analysis', caption: 'Load cases in Robot Structural Analysis.', w: 438, h: 472 },
+        ],
       },
       {
         title: 'The 500 kWp arbitrage',
@@ -81,6 +88,9 @@ export const ROOMS: Room[] = [
           { value: '95.1 %', label: 'self-consumption' },
           { value: '22.2 %', label: 'self-production' },
           { value: '120.8 €/MWh', label: 'secured, against a 40 €/MWh tender cap' },
+        ],
+        photos: [
+          { src: '/media/solar/self-consumption.webp', alt: 'Chart of self-consumption and self-production rates against installed power in kWp', caption: 'Self-consumption and self-production against installed power, the curve behind the 499.95 kWp choice.', w: 775, h: 440 },
         ],
       },
     ],
@@ -157,7 +167,9 @@ export const ROOMS: Room[] = [
       'Measured in Wokwi simulation and written up as a research article with a 26-paper literature review.',
     ],
     stack: ['ESP32', 'C++', 'MQTT', 'JSON', 'Wokwi'],
-    photos: [],
+    photos: [
+      { src: '/media/parking/sensor-wiring.webp', alt: 'Simulated wiring of ten ultrasonic sensors with status LEDs to a microcontroller and an LCD', caption: 'Sensor wiring, built and tested in simulation.', w: 1537, h: 627 },
+    ],
     xp: 150,
   },
   {
@@ -199,6 +211,11 @@ export const ROOMS: Room[] = [
         body: [
           'I master advanced thermal design and optimisation software based on the finite element method.',
           'Proof point: a compact thermal model of an electronic chip, fitted on 17 FEM simulations with a least-squares optimiser, with about 6 % mean error on junction temperature.',
+        ],
+        photos: [
+          { src: '/media/lab/fem-field.webp', alt: 'FEM temperature field over the chip package', caption: 'FEM temperature field on the chip.', w: 720, h: 540 },
+          { src: '/media/lab/thermal-network.webp', alt: 'Compact thermal resistance network linking junction, case and ambient temperatures', caption: 'The compact model: a resistance network fitted by least squares.', w: 452, h: 201 },
+          { src: '/media/lab/fem-vs-model.webp', alt: 'Bar chart comparing maximum temperature from FEM and from the fitted model across the 17 runs', caption: 'Maximum temperature, FEM against the fitted model, run by run.', w: 766, h: 434 },
         ],
       },
     ],

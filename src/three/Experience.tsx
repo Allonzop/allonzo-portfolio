@@ -26,8 +26,17 @@ function Commissioner() {
       }
     }
     run(useStore.getState().commissioned)
+    if (useStore.getState().started) {
+      done.add('site')
+      commissionRoom('site', reduced)
+    }
     return useStore.subscribe((s, prev) => {
       if (s.commissioned !== prev.commissioned) run(s.commissioned)
+      // energising: the yard's lamps strike just after the flash
+      if (s.started && !prev.started && !done.has('site')) {
+        done.add('site')
+        commissionRoom('site', reduced, 0.5)
+      }
       if (s.handoverOpen && !prev.handoverOpen && !done.has('building')) {
         done.add('building')
         commissionRoom('building', reduced)
@@ -88,7 +97,7 @@ function World() {
   const tap = useFloorTap()
   return (
     <group {...tap}>
-      <StaticBatch room="building" warmth={0.2} dark={1}>
+      <StaticBatch room="building" warmth={0.2} dark={1} lines={0.32}>
         <Building />
       </StaticBatch>
       <Rooms />

@@ -2,7 +2,7 @@ import { useFrame, type ThreeElements } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import * as THREE from 'three'
 import type { RoomId } from '../content/rooms'
-import { power } from './power'
+import { power, type PowerId } from './power'
 
 export type V3 = [number, number, number]
 
@@ -91,7 +91,7 @@ export function RoomLight({
 const glowCache = new Map<string, THREE.MeshBasicMaterial>()
 
 /** An emissive material whose glow follows a room's light or equipment level; shared per setting so it batches */
-export function useGlow(id: RoomId | 'building', color: THREE.ColorRepresentation, gain = 2.2, channel: 'light' | 'equip' = 'light', floor = 0.04) {
+export function useGlow(id: PowerId, color: THREE.ColorRepresentation, gain = 2.2, channel: 'light' | 'equip' = 'light', floor = 0.04) {
   const key = `${id}|${String(color)}|${gain}|${channel}|${floor}`
   const mat = useMemo(() => {
     let m = glowCache.get(key)

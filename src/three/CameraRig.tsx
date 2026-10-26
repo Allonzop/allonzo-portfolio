@@ -107,7 +107,8 @@ export function CameraRig() {
       })
     }
     const unsub = useStore.subscribe((s, prev) => {
-      if (s.started && !prev.started) zoomTo(narrow ? 24 : 26, 1.8)
+      // energised: a slow dolly from the establishing shot down to the engineer
+      if (s.started && !prev.started) zoomTo(narrow ? 44 : 29, 3.2, { az: 0.08, el: 0.3 })
       if (s.activeRoom && s.activeRoom !== prev.activeRoom) zoomTo(FRAME[s.activeRoom] * (narrow ? 1.25 : 1), 1.4, VIEW[s.activeRoom])
       if (s.panelOpen !== prev.panelOpen) {
         gsap.to(rig, {
@@ -122,14 +123,15 @@ export function CameraRig() {
     return unsub
   }, [camera, get, narrow, reduced, rig])
 
-  useFrame(({ size: sz }, rawDt) => {
+  useFrame(({ size: sz, clock }, rawDt) => {
     const c = controls.current
     if (!c) return
     const dt = Math.min(rawDt, 0.05)
     const s = useStore.getState()
     if (s.handoverOpen) goal.set(0, overviewY(sz.width / sz.height), -1)
     else if (s.activeRoom && s.panelOpen) goal.copy(roomFocus(s.activeRoom))
-    else if (s.started) goal.set(avatarState.x, avatarState.y + 1.3, avatarState.z)
+    // aim above the engineer so the room he stands in, and the floor above, stay in frame
+    else if (s.started) goal.set(avatarState.x, avatarState.y + (sz.width < 760 ? 2.6 : 2.1), avatarState.z)
     else goal.set(0, overviewY(sz.width / sz.height), -1)
     const k = reduced ? 1 : 1 - Math.exp(-dt * 3.2)
     offset.copy(camera.position).sub(c.target)
@@ -137,6 +139,11 @@ export function CameraRig() {
     c.target.copy(rig.target)
     if (rig.forceDir) offset.setFromSphericalCoords(rig.dist, Math.PI / 2 - rig.el, rig.az)
     else if (rig.forceDist) offset.setLength(rig.dist)
+    else if (!s.started && !reduced) {
+      // the establishing shot drifts slowly round the drawing while the warning is up
+      const t = clock.elapsedTime
+      offset.setFromSphericalCoords(offset.length(), Math.PI / 2 - (0.24 + Math.sin(t * 0.05) * 0.05), 0.16 + Math.sin(t * 0.07) * 0.32)
+    }
     camera.position.copy(rig.target).add(offset)
     c.update()
 
