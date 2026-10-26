@@ -1,10 +1,10 @@
 @import 'tailwindcss';
 
-/* self-hosted and preloaded from index.html, so text never reflows on arrival */
+/* self-hosted and preloaded from index.html; optional display means a late font never reflows the page */
 @font-face {
   font-family: 'Archivo Variable';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 100 900;
   font-stretch: 62% 125%;
   src: url('/fonts/archivo-wdth.woff2') format('woff2-variations');
@@ -13,14 +13,14 @@
 @font-face {
   font-family: 'B612 Mono';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 400;
   src: url('/fonts/b612-mono-400.woff2') format('woff2');
 }
 @font-face {
   font-family: 'B612 Mono';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 700;
   src: url('/fonts/b612-mono-700.woff2') format('woff2');
 }

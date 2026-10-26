@@ -40,7 +40,7 @@ export default function ListMode() {
   return (
     <div ref={root} className="min-h-full overflow-x-clip bg-night text-engrave">
       <header className="sticky top-0 z-20 border-b border-[#1d2636] bg-[rgb(5_10_20/0.92)] backdrop-blur-sm">
-        <div className="mx-auto flex max-w-[60rem] items-center justify-between gap-3 px-4 py-3">
+        <div className="mx-auto flex h-16 max-w-[60rem] items-center justify-between gap-3 px-4 whitespace-nowrap">
           <p className="engraved text-[1rem] font-extrabold">{PROFILE.name}</p>
           {!fallback && (
             <a
