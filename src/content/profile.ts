@@ -15,8 +15,8 @@ export const PROFILE = {
   ],
   email: 'allonzopensa@gmail.com',
   linkedin: 'https://www.linkedin.com/in/allonzo-pensabene/',
-  /** Set to the PDF path in /public once the CV is provided */
-  cv: null as string | null,
+  /** One-page CV, built from the same content as the site (source in _work/cv) */
+  cv: '/cv/allonzo-pensabene-cv.pdf' as string | null,
   path: [
     { years: '2021–2024', what: 'BUT in thermal and energy engineering (GTE)', where: 'IUT' },
     { years: '2022–2024', what: 'Apprentice', where: 'Solar design office' },
