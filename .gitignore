@@ -32,3 +32,6 @@ _work/
 .netlify
 .claude/
 dist-ssr
+
+# Walkthrough recordings (deliverables, not source)
+walkthrough.*
