@@ -103,7 +103,7 @@ export const ROOMS: Room[] = [
     ],
     stack: ['Archelios', 'PV*Sol', 'PVGIS', 'SolarEdge Designer', 'AutoCAD', 'SketchUp', 'Robot', 'VBA', 'JavaScript'],
     photos: [
-      { src: '/media/solar/inverter-room.webp', alt: 'A PV inverter room in a steel enclosure: wall-mounted inverters, AC and DC boxes, cable trays', caption: 'Inverter room on a PV site.', w: 1130, h: 851 },
+      { src: '/media/solar/inverter-room.webp', alt: 'A PV inverter room in a steel enclosure: wall-mounted inverters, AC and DC boxes, cable trays', caption: 'An inverter room I sized end to end, on a PV project for an aquatic centre.', w: 1130, h: 851 },
     ],
     xp: 150,
   },
