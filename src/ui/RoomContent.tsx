@@ -81,7 +81,7 @@ export function Photos({ photos }: { photos: Photo[] }) {
                   loading="lazy"
                   decoding="async"
                   className={lead ? 'block h-auto max-h-[22rem] w-auto max-w-full' : 'block w-full object-contain'}
-                  style={lead ? undefined : { aspectRatio: p.h > p.w ? '3 / 4' : '4 / 3' }}
+                  style={lead ? undefined : { aspectRatio: Math.abs(p.w - p.h) < 0.05 * p.w ? '1 / 1' : p.h > p.w ? '3 / 4' : '4 / 3' }}
                 />
                 <span className="reading absolute top-0 left-0 bg-ink px-1.5 py-0.5 text-[0.7rem] text-tag">FIG {String(i + 1).padStart(2, '0')}</span>
               </a>
