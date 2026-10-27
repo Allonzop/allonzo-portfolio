@@ -179,9 +179,53 @@ export const ROOMS: Room[] = [
       'Only confirmed state changes are published over MQTT, as 120–150-byte JSON frames, to a web dashboard.',
       'Measured in Wokwi simulation and written up as a research article with a 26-paper literature review.',
     ],
-    stack: ['ESP32', 'C++', 'MQTT', 'JSON', 'Wokwi'],
+    features: [
+      {
+        title: 'From 4 spaces to a network of car parks',
+        lead: 'Started from a 4-space Arduino Uno model.',
+        body: [
+          'Extended it to 10 spaces on an Arduino Mega, with ultrasonic sensors, signal LEDs and an LCD.',
+          'Then moved to ESP32 units with Wi-Fi: 4 spaces per unit, several units publishing to one MQTT broker, and a web supervision page.',
+          'The system does more than count: it assigns a free space, and sends the driver to another car park when the first one is full.',
+        ],
+        figures: [
+          { value: '4', label: 'spaces on the first Arduino Uno model' },
+          { value: '10', label: 'spaces on the Arduino Mega' },
+          { value: '4', label: 'spaces per ESP32 unit, several units per broker' },
+        ],
+      },
+      {
+        title: 'Choosing the sensor and the protocol',
+        body: [
+          '6 sensor families and 8 communication protocols benchmarked against the literature, then scored in a weighted decision matrix.',
+          'The HC-SR04 ultrasonic sensor came first: under €1 a unit, 15–40 mW, native on ESP32 and Arduino.',
+        ],
+        figures: [
+          { value: '25/30', label: 'HC-SR04 in the decision matrix' },
+          { value: '21/30', label: 'magnetic loop, second' },
+          { value: '6', label: 'sensor families compared' },
+          { value: '8', label: 'protocols benchmarked' },
+        ],
+      },
+      {
+        title: 'A year of real car-park data',
+        body: ["Montpellier's open data analysed in a Jupyter notebook: minute-by-minute occupancy of 22 car parks over 2019, with hourly heatmaps, weekly trends and saturation time per car park."],
+        figures: [
+          { value: '10,993,288', label: 'minute-by-minute records' },
+          { value: '22', label: 'car parks, all of 2019' },
+        ],
+      },
+    ],
+    stack: ['ESP32', 'Arduino Mega', 'C++', 'MQTT', 'JSON', 'Wokwi', 'PlatformIO', 'Python / Jupyter', 'HTML / JS'],
     photos: [
-      { src: '/media/parking/sensor-wiring.webp', alt: 'Simulated wiring of ten ultrasonic sensors with status LEDs to a microcontroller and an LCD', caption: 'Sensor wiring, built and tested in simulation.', w: 1537, h: 627 },
+      { src: '/media/parking/park-supervision.webp', alt: 'Web supervision page showing three car parks of four spaces each, with free and occupied states', caption: 'The web supervision: 3 car parks, 4 spaces each, live over MQTT.', w: 1468, h: 504 },
+      { src: '/media/parking/park-architecture.webp', alt: 'Architecture diagram: three ESP32 car parks of four spaces publishing to an MQTT broker, feeding a web supervision page that shows live state and redirects to a free car park', caption: 'The distributed architecture: each ESP32 runs a car park, one broker, one supervision.', w: 1600, h: 683 },
+      { src: '/media/parking/park-fsm.webp', alt: 'Flowchart of the space management algorithm: detection, assignment of a free space, timeout and redirection', caption: 'The space management logic, drawn as a flowchart.', w: 788, h: 1600 },
+      { src: '/media/parking/sensor-wiring.webp', alt: 'Simulated wiring of ten ultrasonic sensors with status LEDs to a microcontroller and an LCD', caption: 'The 10-space Arduino Mega wiring, built and tested in simulation.', w: 1537, h: 627 },
+      { src: '/media/parking/park-json.webp', alt: 'The last JSON frame received from the ESP32: zone, each space with its status, and the count of free spaces', caption: 'A JSON frame as the supervision receives it.', w: 545, h: 530 },
+      { src: '/media/parking/park-wokwi.webp', alt: 'VS Code with the Wokwi simulator running the ESP32 circuit next to its code', caption: 'Developed in VS Code with PlatformIO and the Wokwi simulator.', w: 1600, h: 999 },
+      { src: '/media/parking/park-heatmap.webp', alt: 'Heatmap of average occupancy by hour and weekday for one Montpellier car park', caption: 'Occupancy by hour and weekday, one of the 22 car parks.', w: 1259, h: 340 },
+      { src: '/media/parking/park-weekly.webp', alt: 'Weekly average occupancy of the 22 Montpellier car parks across 2019', caption: 'Weekly occupancy of the 22 car parks across 2019.', w: 1389, h: 515 },
     ],
     xp: 150,
   },

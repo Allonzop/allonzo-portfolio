@@ -55,7 +55,7 @@ export function Chips({ items }: { items: string[] }) {
 export const roomMedia = (room: Room): Photo[] => [...room.photos, ...(room.features ?? []).flatMap((f) => f.photos ?? [])]
 
 /** Drawings and charts keep every edge; photos fill their frame */
-const isDrawing = (p: Photo) => /model|robot|consumption|fem-|network|wiring|reading-tree|play-furniture/.test(p.src)
+const isDrawing = (p: Photo) => /model|robot|consumption|fem-|network|wiring|reading-tree|play-furniture|park-/.test(p.src)
 
 /** The evidence, shown first: one large print, the rest on a strip beneath; tap the print to read it full size */
 export function Gallery({ photos }: { photos: Photo[] }) {
