@@ -146,7 +146,13 @@ export const ROOMS: Room[] = [
     ],
     aside: 'Why it matters: fast adaptation abroad, a feel for materials and structures, rigour.',
     stack: ['Hand tools', 'Structural timber repair', 'Hull preparation', 'Marine-grade coatings', 'Working English'],
-    photos: [],
+    photos: [
+      { src: '/media/boatyard/covered-slip.webp', alt: 'A wooden sailing boat with a green and blue hull on the slip inside a timber-roofed boat shed', caption: 'In the covered slip, under the old timber roof.', w: 1050, h: 1400 },
+      { src: '/media/boatyard/deck-opened.webp', alt: 'Looking forward along a wooden boat under restoration, deck boards lifted and frames exposed below, inside a scaffolded tent', caption: 'Deck opened up, frames exposed.', w: 1050, h: 1400 },
+      { src: '/media/boatyard/frames-painted.webp', alt: 'Inside a small wooden boat: freshly painted white frames and floors', caption: 'Frames and floors, freshly painted.', w: 1050, h: 1400 },
+      { src: '/media/boatyard/deck-seams.webp', alt: 'A utility knife resting on a laid wooden deck with black seams', caption: 'Deck seams, worked by hand.', w: 1050, h: 1400 },
+      { src: '/media/boatyard/yard.webp', alt: 'The boatyard building in Plymouth: a timber shed with a large metal pyramid roof beside an old stone wall', caption: 'The yard, Plymouth.', w: 1050, h: 1400 },
+    ],
     xp: 150,
   },
   {

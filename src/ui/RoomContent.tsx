@@ -60,7 +60,7 @@ export function Photos({ photos }: { photos: Photo[] }) {
       <div className={`grid gap-3 ${photos.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
         {photos.map((p, i) => {
           // the lead print hugs its own shape; the others sit in matched frames
-          const lead = photos.length === 1 || (photos.length === 3 && i === 0)
+          const lead = i === 0 && photos.length % 2 === 1
           return (
             <figure key={p.src} className={lead && photos.length > 1 ? 'col-span-2' : ''}>
               {/* a link, so the static list page still opens the full image without scripts */}
@@ -80,7 +80,8 @@ export function Photos({ photos }: { photos: Photo[] }) {
                   height={p.h}
                   loading="lazy"
                   decoding="async"
-                  className={lead ? 'block h-auto max-h-[22rem] w-auto max-w-full' : 'block aspect-[4/3] w-full object-contain'}
+                  className={lead ? 'block h-auto max-h-[22rem] w-auto max-w-full' : 'block w-full object-contain'}
+                  style={lead ? undefined : { aspectRatio: p.h > p.w ? '3 / 4' : '4 / 3' }}
                 />
                 <span className="reading absolute top-0 left-0 bg-ink px-1.5 py-0.5 text-[0.7rem] text-tag">FIG {String(i + 1).padStart(2, '0')}</span>
               </a>
