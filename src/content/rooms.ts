@@ -280,7 +280,11 @@ export const ROOMS: Room[] = [
       },
     ],
     stack: ['Revit', 'Pléiades', 'Climate Consultant', 'SketchUp', 'AutoCAD', 'BIM'],
-    photos: [],
+    photos: [
+      { src: '/media/studio/entrance-render.webp', alt: 'SketchUp render of a nursery entrance: curved slatted timber walls, a central tiered column and low display shelves', caption: 'A nursery entrance: the 3D model I built in SketchUp for an interior design project, plugins included.', w: 660, h: 404 },
+      { src: '/media/studio/reading-tree.webp', alt: 'A reading tree: a timber column with stacked round shelves and tiered seating at its base, dimensioned in millimetres', caption: 'A reading tree with tiered seating, modelled with its dimensions.', w: 384, h: 334 },
+      { src: '/media/studio/play-furniture.webp', alt: 'Three pieces of curved timber play furniture with coloured edges', caption: 'Curved timber play furniture, modelled in SketchUp.', w: 896, h: 330 },
+    ],
     xp: 150,
   },
   {
