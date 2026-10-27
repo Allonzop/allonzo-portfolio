@@ -65,6 +65,91 @@ function BmsCabinet({ p }: { p: V3 }) {
   )
 }
 
+/** The supervisor: whole-building readings and every room's state, live once the plant room is commissioned */
+function Supervisor({ p }: { p: V3 }) {
+  return (
+    <group position={p}>
+      {/* the supervision desk */}
+      <Box p={[0, 0.74, 0]} s={[1.7, 0.06, 0.72]} c="#3b4148" />
+      {[-0.78, 0.78].map((x) => (
+        <Box key={x} p={[x, 0.37, 0]} s={[0.06, 0.74, 0.62]} c="#2a2f35" />
+      ))}
+      <Box p={[0, 0.86, -0.18]} s={[0.08, 0.18, 0.08]} c="#1b1e22" />
+      <Box p={[0.35, 0.785, 0.18]} s={[0.5, 0.02, 0.16]} c="#1b1e22" />
+      <SupervisorScreen />
+    </group>
+  )
+}
+
+function SupervisorScreen() {
+  return (
+    <Screen
+      id="plant"
+      p={[0, 1.36, -0.2]}
+      size={[1.4, 0.8]}
+      px={[768, 440]}
+      fps={3}
+      paint={(ctx, t, w, h) => {
+        const done = useStore.getState().commissioned
+        const n = done.length
+        ctx.fillStyle = '#06111c'
+        ctx.fillRect(0, 0, w, h)
+        ctx.fillStyle = '#0d2a44'
+        ctx.fillRect(0, 0, w, 52)
+        ctx.fillStyle = '#ffb04a'
+        ctx.font = '700 26px "B612 Mono", monospace'
+        ctx.fillText('SUPERVISION  BMS', 22, 35)
+        ctx.fillStyle = '#5ec8ff'
+        ctx.font = '400 20px "B612 Mono", monospace'
+        ctx.fillText('SIM', w - 70, 35)
+        // building readings, rising as rooms come online
+        const temp = (n ? 20.6 + n * 0.12 : 16.8) + Math.sin(t * 0.7) * 0.1
+        const co2 = Math.round((n ? 520 + n * 18 : 430) + Math.sin(t * 0.37) * 9)
+        const kw = n ? 4.2 + n * 6.4 + Math.sin(t * 1.3) * 0.6 : 0.4
+        const rows: [string, string, string][] = [
+          ['T', temp.toFixed(1), '°C'],
+          ['CO2', String(co2), 'ppm'],
+          ['P', kw.toFixed(1), 'kW'],
+        ]
+        rows.forEach(([k, v, u], i) => {
+          const y = 118 + i * 92
+          ctx.fillStyle = '#7f9bb3'
+          ctx.font = '400 24px "B612 Mono", monospace'
+          ctx.fillText(k, 26, y)
+          ctx.fillStyle = '#ffcf8a'
+          ctx.font = '700 52px "B612 Mono", monospace'
+          ctx.fillText(v, 96, y + 8)
+          const vw = ctx.measureText(v).width
+          ctx.fillStyle = '#7f9bb3'
+          ctx.font = '400 24px "B612 Mono", monospace'
+          ctx.fillText(u, 96 + vw + 12, y + 8)
+        })
+        // room states: drawn until live
+        ctx.strokeStyle = '#1d3b57'
+        ctx.lineWidth = 2
+        ctx.beginPath()
+        ctx.moveTo(392, 72)
+        ctx.lineTo(392, h - 22)
+        ctx.stroke()
+        ROOMS.forEach((r, i) => {
+          const y = 92 + i * 42
+          const on = done.includes(r.id)
+          ctx.fillStyle = on ? '#3dff8a' : 'transparent'
+          ctx.strokeStyle = on ? '#3dff8a' : '#5ec8ff'
+          ctx.lineWidth = 3
+          ctx.strokeRect(416, y - 18, 18, 18)
+          if (on) ctx.fillRect(420, y - 14, 10, 10)
+          ctx.fillStyle = on ? '#e8f5ee' : '#5ec8ff'
+          ctx.font = '700 22px "B612 Mono", monospace'
+          ctx.fillText(r.code.slice(0, 12), 450, y)
+          ctx.fillStyle = on ? '#3dff8a' : '#2f6f95'
+          ctx.fillText(on ? 'ON' : 'OFF', w - 76, y)
+        })
+      }}
+    />
+  )
+}
+
 export function PlantRoom() {
   return (
     <group>
@@ -83,6 +168,7 @@ export function PlantRoom() {
         <Box p={[1.2, 2.75, -0.2]} s={[0.8, 1.1, 0.7]} c="#a9b1b6" />
       </group>
       <BmsCabinet p={[-3.8, 0, -5.55]} />
+      <Supervisor p={[-4.4, 0, -3.55]} />
       <Pump p={[-8.1, 0, -2.1]} />
       <Pump p={[-8.1, 0, -1.1]} />
       {/* pipe run along the left wall */}

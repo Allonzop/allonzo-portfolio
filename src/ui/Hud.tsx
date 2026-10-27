@@ -1,5 +1,4 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useEffect, useState } from 'react'
 import { ROOMS } from '../content/rooms'
 import { PROFILE } from '../content/profile'
 import { useStore } from '../store'
@@ -101,39 +100,6 @@ function Controls() {
   )
 }
 
-/** Live BMS readings: simulated, rising as rooms come online */
-function Readings() {
-  const n = useStore((s) => s.commissioned.length)
-  const [t, setT] = useState(0)
-  useEffect(() => {
-    const id = window.setInterval(() => setT((v) => v + 1), 1000)
-    return () => window.clearInterval(id)
-  }, [])
-  const s = Math.sin(t * 0.7)
-  const temp = (n ? 20.6 + n * 0.12 : 16.8) + s * 0.1
-  const co2 = Math.round((n ? 520 + n * 18 : 430) + Math.sin(t * 0.37) * 9)
-  const kw = n ? 4.2 + n * 6.4 + Math.sin(t * 1.3) * 0.6 : 0.4 + Math.abs(s) * 0.1
-  const rows: [string, string, string][] = [
-    ['T', temp.toFixed(1), '°C'],
-    ['CO₂', String(co2), 'ppm'],
-    ['P', kw.toFixed(1), 'kW'],
-  ]
-  return (
-    <div className="plate screws pointer-events-auto px-7 pt-2.5 pb-3 text-[0.8rem] max-sm:hidden" aria-label="Simulated building readings">
-      <p className="engraved mb-1.5 font-bold whitespace-nowrap text-[#a59f92]">BMS · sim</p>
-      <dl className="reading grid grid-cols-[auto_auto_auto] items-baseline gap-x-2.5 gap-y-1">
-        {rows.map(([k, v, u]) => (
-          <div key={k} className="contents">
-            <dt className="text-[#a59f92]">{k}</dt>
-            <dd className="text-right text-reading">{v}</dd>
-            <dd className="text-[#a59f92]">{u}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  )
-}
-
 function LiftControl() {
   const onLift = useStore((s) => s.onLift)
   const level = useStore((s) => s.level)
@@ -205,6 +171,8 @@ export function Hud() {
   useAmbientSound()
   return (
     <div className="pointer-events-none fixed inset-0 z-10 select-none">
+      {/* a lens vignette: the edges fall away so the lit room carries the frame */}
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_55%,rgb(2_5_12/0.55))]" />
       <Bolt i={0} from="top" className="absolute top-4 right-4 left-4 flex items-start justify-between gap-3 max-sm:top-3 max-sm:right-3 max-sm:left-3">
         <Identity />
         <div className="absolute left-1/2 -translate-x-1/2 max-lg:static max-lg:translate-x-0 max-sm:hidden">
@@ -217,7 +185,6 @@ export function Hud() {
       </Bolt>
       <Toasts />
       <Bolt i={2} from="bottom" className="absolute bottom-4 left-4 flex items-end gap-2">
-        <Readings />
         <HandoverButton />
       </Bolt>
       <Bolt i={3} from="bottom" className="absolute right-4 bottom-4 max-sm:right-3 max-sm:bottom-3">

@@ -9,15 +9,16 @@ import { useStore } from '../store'
 import { LEVEL_Y, ZONES } from '../world/layout'
 import { avatarState } from './Avatar'
 
+/** Close, low framings: entering a room is a shot, not a zoom */
 const FRAME: Record<RoomId, number> = {
-  plant: 21,
-  lab: 21,
-  control: 21,
-  studio: 23,
-  arcade: 23,
-  solar: 28,
-  parking: 32,
-  boatyard: 29,
+  plant: 7.8,
+  lab: 14.5,
+  control: 14.5,
+  studio: 15.5,
+  arcade: 15.5,
+  solar: 24,
+  parking: 27,
+  boatyard: 26,
 }
 
 /** Low target so the plant sits in the upper part of the frame, above the intro tag */
@@ -36,11 +37,25 @@ const overviewDistance = (aspect: number) => {
 const overviewY = (aspect: number) => (aspect < 0.8 ? 0.6 : OVERVIEW_Y)
 
 /** Rooms that read best from a set angle: the boatyard looks past the boat to the harbour and the lighthouse */
-const VIEW: Partial<Record<RoomId, { az: number; el: number }>> = {
-  boatyard: { az: -0.75, el: 0.18 },
+const VIEW: Record<RoomId, { az: number; el: number }> = {
+  plant: { az: -0.22, el: 0.13 },
+  lab: { az: 0.18, el: 0.24 },
+  control: { az: 0.42, el: 0.24 },
+  studio: { az: -0.3, el: 0.26 },
+  arcade: { az: 0.36, el: 0.26 },
+  solar: { az: 0.12, el: 0.36 },
+  parking: { az: -0.55, el: 0.36 },
+  boatyard: { az: -0.75, el: 0.22 },
+}
+
+/** Where some rooms look: the plant room frames its supervision screen */
+const FOCUS: Partial<Record<RoomId, [number, number, number]>> = {
+  plant: [-4.7, 1.45, -3.4],
 }
 
 const roomFocus = (id: RoomId) => {
+  const f = FOCUS[id]
+  if (f) return new THREE.Vector3(...f)
   const z = ZONES.find((q) => q.id === id)!
   const r = z.rect
   // the boatyard aims a little high so the lighthouse sits clear of the HUD and the toast
@@ -85,7 +100,7 @@ export function CameraRig() {
   // zoom to rooms, follow the engineer, make room for the panel
   useEffect(() => {
     const aspect = () => get().size.width / get().size.height
-    const zoomTo = (d: number, dur = 1.4, view?: { az: number; el: number }) => {
+    const zoomTo = (d: number, dur = 1.4, view?: { az: number; el: number }, drift = false) => {
       tween.current?.kill()
       const c = controls.current
       if (!c) return
@@ -103,13 +118,32 @@ export function CameraRig() {
         onComplete: () => {
           rig.forceDist = false
           rig.forceDir = false
+          // hold the shot: a slow push-in while the visitor reads
+          if (drift && !reduced) {
+            rig.forceDist = true
+            tween.current = gsap.to(rig, {
+              dist: d * 0.92,
+              duration: 9,
+              ease: 'sine.inOut',
+              onComplete: () => {
+                rig.forceDist = false
+              },
+            })
+          }
         },
       })
     }
+    const c0 = controls.current
+    const release = () => {
+      tween.current?.kill()
+      rig.forceDist = false
+      rig.forceDir = false
+    }
+    c0?.addEventListener('start', release)
     const unsub = useStore.subscribe((s, prev) => {
       // energised: a slow dolly from the establishing shot down to the engineer
       if (s.started && !prev.started) zoomTo(narrow ? 44 : 29, 3.2, { az: 0.08, el: 0.3 })
-      if (s.activeRoom && s.activeRoom !== prev.activeRoom) zoomTo(FRAME[s.activeRoom] * (narrow ? 1.25 : 1), 1.4, VIEW[s.activeRoom])
+      if (s.activeRoom && s.activeRoom !== prev.activeRoom) zoomTo(FRAME[s.activeRoom] * (narrow ? 1.7 : 1), 2.1, VIEW[s.activeRoom], true)
       if (s.panelOpen !== prev.panelOpen) {
         gsap.to(rig, {
           shiftX: s.panelOpen && !narrow ? 1 : 0,
@@ -120,7 +154,10 @@ export function CameraRig() {
       }
       if (s.handoverOpen && !prev.handoverOpen) zoomTo(overviewDistance(aspect()), 2.4)
     })
-    return unsub
+    return () => {
+      unsub()
+      c0?.removeEventListener('start', release)
+    }
   }, [camera, get, narrow, reduced, rig])
 
   useFrame(({ size: sz, clock }, rawDt) => {
