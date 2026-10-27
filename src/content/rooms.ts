@@ -102,7 +102,9 @@ export const ROOMS: Room[] = [
       'A Chrome extension that pulls 11 financial KPIs (IRR, NPV, LCOE, payback…) from the PV simulation software into a scenario comparison.',
     ],
     stack: ['Archelios', 'PV*Sol', 'PVGIS', 'SolarEdge Designer', 'AutoCAD', 'SketchUp', 'Robot', 'VBA', 'JavaScript'],
-    photos: [],
+    photos: [
+      { src: '/media/solar/inverter-room.webp', alt: 'A PV inverter room in a steel enclosure: wall-mounted inverters, AC and DC boxes, cable trays', caption: 'Inverter room on a PV site.', w: 1130, h: 851 },
+    ],
     xp: 150,
   },
   {
@@ -124,7 +126,10 @@ export const ROOMS: Room[] = [
     ],
     status: 'In progress: an offline field-audit web app with quick 3D massing for quantities and one-click report generation.',
     stack: ['BMS / GTB', 'Modbus', 'HVAC controls', 'Google Sheets', 'Apps Script'],
-    photos: [],
+    photos: [
+      { src: '/media/plant/control-panel.webp', alt: 'An open heating control panel: a controller, rows of contactors, relays and breakers on DIN rails', caption: 'Site visit for a BACS diagnosis: the control panel, opened and read.', w: 1050, h: 1400 },
+      { src: '/media/plant/controller.webp', alt: 'Close-up of a building controller display showing temperatures and output percentages, next to four relays', caption: 'The controller and its output relays, read on site.', w: 1400, h: 1050 },
+    ],
     xp: 150,
   },
   {
