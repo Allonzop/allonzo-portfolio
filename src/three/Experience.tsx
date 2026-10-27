@@ -8,6 +8,7 @@ import { Avatar, moveRequest } from './Avatar'
 import { Bloom } from './Bloom'
 import { Building } from './Building'
 import { CameraRig } from './CameraRig'
+import { LiftCamera } from './LiftCamera'
 import { Environment } from './Environment'
 import { commissionRoom, power } from './power'
 import { Rooms } from './rooms'
@@ -93,16 +94,16 @@ function useFloorTap() {
   }
 }
 
-function World() {
+function World({ lift }: { lift: boolean }) {
   const tap = useFloorTap()
   return (
-    <group {...tap}>
+    <group {...(lift ? {} : tap)}>
       <StaticBatch room="building" warmth={0.2} dark={1} lines={0.32}>
         <Building />
       </StaticBatch>
       <Rooms />
       <ActiveLight />
-      <Avatar />
+      {!lift && <Avatar />}
     </group>
   )
 }
@@ -131,7 +132,8 @@ function Precompile({ onDone }: { onDone: () => void }) {
   return null
 }
 
-export default function Experience() {
+/** lift: the phone version, a camera that rides the scroll instead of an engineer to walk */
+export default function Experience({ lift = false }: { lift?: boolean }) {
   const [ready, setReady] = useState(false)
   const setSceneReady = useStore((s) => s.setSceneReady)
   const onReady = useMemo(
@@ -145,29 +147,29 @@ export default function Experience() {
   const setFallback = useStore((s) => s.forceFallback)
   return (
     <Canvas
-      className="!fixed inset-0 transition-opacity duration-1000"
+      className={`!fixed inset-0 transition-opacity duration-1000 ${lift ? 'pointer-events-none' : ''}`}
       style={{ opacity: ready ? 1 : 0 }}
       frameloop={ready ? 'always' : 'never'}
       dpr={[1, 1.5]}
-      gl={{ antialias: true, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
+      gl={{ antialias: true, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.3 }}
       camera={{ fov: 34, near: 0.3, far: 900, position: [14, 18, 42] }}
       onCreated={({ gl, scene }) => {
         if (import.meta.env.DEV || location.search.includes('debug')) Object.assign(window, { __gl: gl, __scene: scene })
         gl.domElement.addEventListener('webglcontextlost', () => setFallback(), { once: true })
       }}
     >
-      <color attach="background" args={['#050a14']} />
-      <fog attach="fog" args={['#0a1424', 70, 260]} />
-      <hemisphereLight args={['#6a88b8', '#0c0f14', 0.9]} />
-      <directionalLight position={[-40, 60, 30]} intensity={0.9} color="#a9c1e8" />
-      <ambientLight intensity={0.08} color="#ffb070" />
+      <color attach="background" args={['#14264a']} />
+      <fog attach="fog" args={['#1d3258', 80, 280]} />
+      <hemisphereLight args={['#9db8e6', '#2a2f3a', 1.6]} />
+      <directionalLight position={[-40, 60, 30]} intensity={1.3} color="#c3d4ef" />
+      <ambientLight intensity={0.25} color="#ffc08a" />
       <PerformanceMonitor onDecline={() => setBloom(false)} flipflops={2}>
         <AdaptiveDpr />
         <Suspense fallback={null}>
           <Environment />
-          <World />
+          <World lift={lift} />
         </Suspense>
-        <CameraRig />
+        {lift ? <LiftCamera /> : <CameraRig />}
         <Commissioner />
         <Precompile onDone={onReady} />
         {bloom && <Bloom />}

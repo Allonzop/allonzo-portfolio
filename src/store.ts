@@ -21,6 +21,8 @@ type State = {
   fallback: 'webgl' | null
   started: boolean
   sceneReady: boolean
+  /** The phone version: the visitor rides down through the plant instead of walking it */
+  lift: boolean
   commissioned: RoomId[]
   activeRoom: RoomId | null
   panelOpen: boolean
@@ -42,6 +44,7 @@ type State = {
   forceFallback: () => void
   start: () => void
   setSceneReady: () => void
+  setLift: (lift: boolean) => void
   enterRoom: (id: RoomId | null) => void
   closePanel: () => void
   openPanel: (id: RoomId) => void
@@ -69,6 +72,7 @@ export const useStore = create<State>((set, get) => ({
   fallback: null,
   started: false,
   sceneReady: false,
+  lift: false,
   commissioned: [],
   activeRoom: null,
   panelOpen: false,
@@ -95,6 +99,7 @@ export const useStore = create<State>((set, get) => ({
   forceFallback: () => set({ mode: 'list', fallback: 'webgl' }),
   start: () => set({ started: true }),
   setSceneReady: () => set({ sceneReady: true }),
+  setLift: (lift) => set({ lift }),
 
   enterRoom: (id) => {
     const s = get()
@@ -120,7 +125,8 @@ export const useStore = create<State>((set, get) => ({
     if (commissioned.length === ROOMS.length) {
       window.setTimeout(() => {
         get().unlock('all-rooms')
-        set({ handoverOpen: true, handoverSeen: true })
+        // the lift ends on its own handover floor; the walking version hands the certificate over
+        if (!get().lift) set({ handoverOpen: true, handoverSeen: true })
       }, 2600)
     }
   },

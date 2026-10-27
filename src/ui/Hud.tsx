@@ -65,7 +65,7 @@ function Progress() {
   )
 }
 
-function SoundIcon({ on }: { on: boolean }) {
+export function SoundIcon({ on }: { on: boolean }) {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden>
       <path d="M4 9h4l5-4v14l-5-4H4z" />
@@ -172,7 +172,7 @@ export function Hud() {
   return (
     <div className="pointer-events-none fixed inset-0 z-10 select-none">
       {/* a lens vignette: the edges fall away so the lit room carries the frame */}
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_55%,rgb(2_5_12/0.55))]" />
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_55%,rgb(2_5_12/0.32))]" />
       <Bolt i={0} from="top" className="absolute top-4 right-4 left-4 flex items-start justify-between gap-3 max-sm:top-3 max-sm:right-3 max-sm:left-3">
         <Identity />
         <div className="absolute left-1/2 -translate-x-1/2 max-lg:static max-lg:translate-x-0 max-sm:hidden">

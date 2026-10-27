@@ -168,7 +168,7 @@ export function StaticBatch({
     if (!lit.current.length) return
     const k = l * warmth
     const keep = dark + (1 - dark) * l
-    const paper = (1 - l) * 0.55 * Math.min(1, lines)
+    const paper = (1 - l) * 0.85 * Math.min(1, lines)
     for (const { mat, base } of lit.current) {
       mat.color.copy(base).multiplyScalar(keep)
       // warm light on the surface's own colour, plus a little of the lamp's colour; offline, the blue of the drawing

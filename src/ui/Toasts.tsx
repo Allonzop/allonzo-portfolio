@@ -51,8 +51,9 @@ function Item({ t }: { t: Toast }) {
   )
 }
 
-export function Toasts() {
-  const toasts = useStore((s) => s.toasts)
+/** rooms: false keeps only achievements, for the lift, whose indicator already shows each room going live */
+export function Toasts({ rooms = true }: { rooms?: boolean }) {
+  const toasts = useStore((s) => s.toasts).filter((t) => rooms || t.kind !== 'room')
   return (
     <ol className="absolute top-[4.6rem] left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 max-sm:top-[8.4rem]" aria-live="polite">
       <AnimatePresence>

@@ -17,11 +17,11 @@ const skyFrag = /* glsl */ `
 varying vec3 vDir;
 void main() {
   float h = clamp(vDir.y, -0.2, 1.0);
-  vec3 horizon = vec3(0.035, 0.06, 0.11);
-  vec3 zenith = vec3(0.004, 0.008, 0.02);
+  vec3 horizon = vec3(0.17, 0.23, 0.38);
+  vec3 zenith = vec3(0.035, 0.07, 0.16);
   vec3 col = mix(horizon, zenith, smoothstep(0.0, 0.55, h));
   // faint sodium glow of the town on the horizon
-  col += vec3(0.16, 0.07, 0.02) * exp(-abs(h) * 22.0) * 0.5;
+  col += vec3(0.32, 0.15, 0.05) * exp(-abs(h) * 14.0) * 0.8;
   gl_FragColor = vec4(col, 1.0);
 }`
 

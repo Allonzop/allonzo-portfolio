@@ -51,45 +51,69 @@ export function Chips({ items }: { items: string[] }) {
   )
 }
 
-/** Evidence prints: real figures pinned to the tag; tap one to read it full size */
-export function Photos({ photos }: { photos: Photo[] }) {
+/** Every figure a room has: its own photos first, then the ones proving each feature */
+export const roomMedia = (room: Room): Photo[] => [...room.photos, ...(room.features ?? []).flatMap((f) => f.photos ?? [])]
+
+/** Drawings and charts keep every edge; photos fill their frame */
+const isDrawing = (p: Photo) => /model|robot|consumption|fem-|network|wiring|reading-tree|play-furniture/.test(p.src)
+
+/** The evidence, shown first: one large print, the rest on a strip beneath; tap the print to read it full size */
+export function Gallery({ photos }: { photos: Photo[] }) {
+  const [i, setI] = useState(0)
   const [open, setOpen] = useState<Photo | null>(null)
   if (!photos.length) return null
+  const lead = photos[Math.min(i, photos.length - 1)]
+  const n = photos.length
   return (
-    <>
-      <div className={`grid gap-3 ${photos.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-        {photos.map((p, i) => {
-          // the lead print hugs its own shape; the others sit in matched frames
-          const lead = i === 0 && photos.length % 2 === 1
-          return (
-            <figure key={p.src} className={lead && photos.length > 1 ? 'col-span-2' : ''}>
-              {/* a link, so the static list page still opens the full image without scripts */}
+    <figure>
+      {/* a link, so the static list page still opens the full image without scripts */}
+      <a
+        href={lead.src}
+        onClick={(e) => {
+          e.preventDefault()
+          setOpen(lead)
+        }}
+        className={`relative block cursor-zoom-in overflow-hidden rounded-[4px] border-2 border-ink ${isDrawing(lead) ? 'bg-white' : 'bg-ink'}`}
+        aria-label={`Enlarge: ${lead.alt}`}
+      >
+        <img
+          key={lead.src}
+          src={lead.src}
+          alt={lead.alt}
+          width={lead.w}
+          height={lead.h}
+          decoding="async"
+          className={`block aspect-[4/3] w-full ${isDrawing(lead) ? 'object-contain p-2' : 'object-cover'}`}
+        />
+        <span className="reading absolute top-0 left-0 bg-ink px-2 py-1 text-[0.72rem] text-tag">
+          FIG {String(i + 1).padStart(2, '0')}/{String(n).padStart(2, '0')}
+        </span>
+        <span aria-hidden className="engraved absolute right-2 bottom-2 rounded-[3px] bg-[rgb(20_20_20/0.8)] px-2 py-1 text-[0.72rem] font-extrabold text-tag">
+          Tap to enlarge
+        </span>
+      </a>
+      {lead.caption && <figcaption className={`mt-1.5 leading-snug text-ink-2 ${BODY}`}>{lead.caption}</figcaption>}
+      {n > 1 && (
+        <ul className="mt-2.5 flex gap-2 overflow-x-auto pb-1" aria-label="More figures">
+          {photos.map((p, k) => (
+            <li key={p.src} className="shrink-0">
+              {/* links too, so the static list page still opens each figure */}
               <a
                 href={p.src}
                 onClick={(e) => {
                   e.preventDefault()
-                  setOpen(p)
+                  setI(k)
                 }}
-                className={`group relative cursor-zoom-in border-2 border-ink bg-white p-1 ${lead ? 'inline-block max-w-full align-top' : 'block w-full'}`}
-                aria-label={`Enlarge: ${p.alt}`}
+                aria-label={`Show figure ${k + 1}: ${p.alt}`}
+                aria-current={k === i}
+                className={`block overflow-hidden rounded-[3px] border-2 transition-opacity ${k === i ? 'border-sodium' : 'border-ink opacity-70 hover:opacity-100'} ${isDrawing(p) ? 'bg-white' : 'bg-ink'}`}
               >
-                <img
-                  src={p.src}
-                  alt={p.alt}
-                  width={p.w}
-                  height={p.h}
-                  loading="lazy"
-                  decoding="async"
-                  className={lead ? 'block h-auto max-h-[22rem] w-auto max-w-full' : 'block w-full object-contain'}
-                  style={lead ? undefined : { aspectRatio: Math.abs(p.w - p.h) < 0.05 * p.w ? '1 / 1' : p.h > p.w ? '3 / 4' : '4 / 3' }}
-                />
-                <span className="reading absolute top-0 left-0 bg-ink px-1.5 py-0.5 text-[0.7rem] text-tag">FIG {String(i + 1).padStart(2, '0')}</span>
+                <img src={p.src} alt="" loading="lazy" decoding="async" className={`block h-16 w-[5.4rem] ${isDrawing(p) ? 'object-contain p-0.5' : 'object-cover'}`} />
               </a>
-              {p.caption && <figcaption className={`mt-1.5 leading-snug text-ink-2 ${BODY}`}>{p.caption}</figcaption>}
-            </figure>
-          )
-        })}
-      </div>
+            </li>
+          ))}
+        </ul>
+      )}
       {open &&
         createPortal(
           <div
@@ -108,7 +132,7 @@ export function Photos({ photos }: { photos: Photo[] }) {
           </div>,
           document.body,
         )}
-    </>
+    </figure>
   )
 }
 
@@ -116,6 +140,11 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
   return (
     <div className={`leading-relaxed ${BODY}`}>
       <p className="leading-snug font-bold text-balance">{room.hook}</p>
+      {roomMedia(room).length > 0 && (
+        <div className="mt-4">
+          <Gallery photos={roomMedia(room)} />
+        </div>
+      )}
       <div className="mt-5">
         <RatingPlate items={room.metrics} />
       </div>
@@ -149,11 +178,6 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
               <RatingPlate items={f.figures} />
             </div>
           )}
-          {f.photos && (
-            <div className="mt-4">
-              <Photos photos={f.photos} />
-            </div>
-          )}
         </section>
       ))}
 
@@ -173,12 +197,6 @@ export function RoomContent({ room, live = false }: { room: Room; live?: boolean
 
       {room.aside && <p className="mt-5 font-semibold text-ink-2">{room.aside}</p>}
 
-      {room.photos.length > 0 && (
-        <>
-          <Band>Evidence</Band>
-          <Photos photos={room.photos} />
-        </>
-      )}
 
       <Band>Stack</Band>
       <Chips items={room.stack} />

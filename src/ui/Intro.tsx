@@ -72,6 +72,7 @@ export function Intro() {
   const setMode = useStore((s) => s.setMode)
   const reduce = useReducedMotion()
   const coarse = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  const lift = useStore((s) => s.lift)
 
   const line = (i: number) =>
     reduce
@@ -146,7 +147,7 @@ export function Intro() {
                   </button>
                 </motion.div>
                 <motion.p {...line(4)} className="mt-3 text-[0.92rem] text-ink-2">
-                  {coarse ? 'Then tap the floor to walk, drag to look around.' : 'Then WASD or arrows to walk, or click the floor. Drag to orbit.'}
+                  {lift ? 'Then scroll to ride down through the plant, floor by floor.' : coarse ? 'Then tap the floor to walk, drag to look around.' : 'Then WASD or arrows to walk, or click the floor. Drag to orbit.'}
                 </motion.p>
               </div>
             </motion.section>
